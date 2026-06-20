@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤿 Leitura Estendida — Mergulho nos Números Racionais | Cap. 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fundo:#04263b;
+  --fundo2:#063a55;
+  --agua:#0a4a6e;
+  --agua-claro:#0e6b94;
+  --espuma:#7fdfff;
+  --areia:#ffe2a8;
+  --coral:#ff7a59;
+  --coral2:#ffb199;
+  --verde:#3ad29f;
+  --verde-esc:#0f7d5c;
+  --verde-bg:#0c4a3c;
+  --vermelho:#ff6b6b;
+  --vermelho-bg:#5a1f1f;
+  --card:#0a4263;
+  --card2:#0d5078;
+  --borda:#1a6e98;
+  --texto:#eaf7ff;
+  --texto2:#a9d2e6;
+  --amarelo:#ffd34d;
+  --raio:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Nunito',sans-serif;
+  color:var(--texto);
+  background:linear-gradient(180deg,#021a2b 0%,#04263b 22%,#063a55 60%,#0a4a6e 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+  line-height:1.6;
+}
+/* bolhas decorativas */
+.bolhas{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.bolha{position:absolute;bottom:-40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.5),rgba(127,223,255,.08));animation:subir linear infinite;opacity:.5;}
+@keyframes subir{to{transform:translateY(-110vh);}}
+
+.header{
+  position:relative;z-index:1;
+  background:linear-gradient(135deg,#02485f,#0a6e8e);
+  text-align:center;padding:30px 18px 26px;
+  border-bottom:4px solid var(--espuma);
+}
+.header .selo{display:inline-block;background:rgba(127,223,255,.18);border:1px solid var(--espuma);color:var(--espuma);
+  font-size:11px;font-weight:800;letter-spacing:2px;padding:4px 14px;border-radius:20px;margin-bottom:10px;}
+.header h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:clamp(24px,5vw,38px);text-shadow:0 2px 10px rgba(0,0,0,.3);}
+.header p{color:var(--texto2);font-size:14px;margin-top:6px;}
+
+/* barra de progresso geral */
+.barra-topo{position:sticky;top:0;z-index:30;background:rgba(4,38,59,.95);backdrop-filter:blur(6px);
+  padding:12px 16px;border-bottom:1px solid var(--borda);}
+.barra-info{max-width:760px;margin:0 auto 7px;display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--texto2);}
+.barra-trilho{max-width:760px;margin:0 auto;height:14px;background:#062c42;border-radius:10px;overflow:hidden;border:1px solid var(--borda);}
+.barra-fill{height:100%;width:0;background:linear-gradient(90deg,var(--espuma),var(--verde));transition:width .5s;border-radius:10px;}
+
+/* mapa da jornada */
+.jornada{max-width:760px;margin:16px auto 0;padding:0 16px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;}
+.j-chip{display:flex;align-items:center;gap:6px;background:var(--card);border:1.5px solid var(--borda);border-radius:30px;
+  padding:6px 12px;font-size:12px;font-weight:700;color:var(--texto2);transition:.25s;}
+.j-chip.atual{border-color:var(--espuma);color:var(--espuma);box-shadow:0 0 0 3px rgba(127,223,255,.15);}
+.j-chip.feita{background:var(--verde-bg);border-color:var(--verde);color:var(--verde);}
+.j-chip .bola{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:#062c42;}
+.j-chip.feita .bola{background:var(--verde);color:#022;}
+
+.wrap{max-width:760px;margin:0 auto;padding:22px 16px 120px;position:relative;z-index:1;}
+
+.painel{background:rgba(10,66,99,.7);border:1px solid var(--borda);border-radius:12px;padding:10px 14px;margin-bottom:18px;
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:12px;}
+.painel .info{color:var(--texto2);flex:1;min-width:190px;}
+.painel .info b{color:var(--texto);}
+.painel .btns{display:flex;gap:6px;flex-wrap:wrap;}
+.mini{background:transparent;border:1px solid var(--borda);color:var(--texto2);padding:5px 11px;border-radius:16px;cursor:pointer;
+  font-size:11px;font-weight:800;font-family:'Nunito';transition:.2s;}
+.mini:hover{border-color:var(--espuma);color:var(--espuma);}
+.mini.zerar:hover{border-color:var(--vermelho);color:var(--vermelho);}
+
+.secao{background:var(--card);border:1px solid var(--borda);border-radius:var(--raio);margin-bottom:20px;overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.28);transition:.3s;}
+.secao.bloqueada{opacity:.55;}
+.sec-head{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;background:linear-gradient(135deg,var(--card2),var(--agua));}
+.sec-head .icone{font-size:26px;}
+.sec-head .tit{font-family:'Fredoka';font-weight:600;font-size:18px;flex:1;}
+.sec-head .estado{font-size:12px;font-weight:800;padding:4px 10px;border-radius:14px;background:#062c42;color:var(--texto2);white-space:nowrap;}
+.sec-head .estado.ok{background:var(--verde);color:#022;}
+.sec-head .cadeado{font-size:20px;}
+.sec-body{padding:0 18px;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease;}
+.secao.aberta .sec-body{max-height:9000px;padding:18px;}
+
+.leitura p{margin-bottom:12px;font-size:15.5px;color:#dff1fb;}
+.leitura h3{font-family:'Fredoka';color:var(--espuma);font-size:17px;margin:16px 0 8px;}
+.destaque{background:rgba(127,223,255,.1);border-left:4px solid var(--espuma);border-radius:8px;padding:12px 14px;margin:12px 0;font-size:15px;}
+.destaque b{color:var(--espuma);}
+.exemplo{background:#062c42;border:1px dashed var(--borda);border-radius:10px;padding:12px 14px;margin:12px 0;font-size:15px;}
+.exemplo .et{font-weight:800;color:var(--areia);font-size:12px;letter-spacing:1px;display:block;margin-bottom:6px;}
+.postit{background:linear-gradient(135deg,#fff4c2,#ffe89a);color:#5b4a12;border-radius:6px;padding:12px 14px;margin:12px 0;
+  font-size:14.5px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);transform:rotate(-.5deg);}
+.postit::before{content:"📌 ";}
+.peg{background:var(--vermelho-bg);border:1px solid var(--vermelho);border-radius:8px;padding:12px 14px;margin:12px 0;font-size:14.5px;}
+.peg::before{content:"⚠️ Pegadinha: ";font-weight:800;color:var(--coral2);}
+
+/* frações */
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 3px;line-height:1;font-weight:800;}
+.frac .num{padding:0 5px;border-bottom:2px solid currentColor;}
+.frac .den{padding:0 5px;}
+.mat{font-family:'Fredoka';color:var(--areia);font-weight:600;}
+
+.exerc{margin-top:18px;border-top:2px dashed var(--borda);padding-top:16px;}
+.exerc h4{font-family:'Fredoka';font-weight:600;color:var(--amarelo);font-size:16px;margin-bottom:4px;}
+.exerc .sub{font-size:12.5px;color:var(--texto2);margin-bottom:14px;}
+.q{background:#073650;border:1px solid var(--borda);border-radius:12px;padding:14px;margin-bottom:12px;}
+.q .qt{font-weight:700;font-size:15px;margin-bottom:10px;}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:2px solid var(--borda);border-radius:9px;margin-bottom:7px;
+  cursor:pointer;transition:.18s;font-size:14.5px;color:var(--texto2);}
+.opt:hover{border-color:var(--espuma);background:rgba(127,223,255,.07);}
+.opt.sel{border-color:var(--espuma);background:rgba(127,223,255,.14);color:var(--texto);font-weight:700;}
+.opt .l{min-width:24px;height:24px;border-radius:50%;background:#062c42;display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0;}
+.opt.sel .l{background:var(--espuma);color:#022;}
+.q.corrigida .opt{pointer-events:none;}
+.q.corrigida .opt.certa{border-color:var(--verde);background:var(--verde-bg);color:#cfeede;}
+.q.corrigida .opt.certa .l{background:var(--verde);color:#022;}
+.q.corrigida .opt.errada{border-color:var(--vermelho);background:var(--vermelho-bg);}
+.q.corrigida .opt.errada .l{background:var(--vermelho);color:#fff;}
+.q .exp{display:none;margin-top:9px;font-size:13.5px;background:#062c42;border-radius:8px;padding:10px 12px;line-height:1.5;}
+.q.corrigida .exp{display:block;}
+.q .exp b{color:var(--espuma);}
+
+.barra-sec{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px;}
+.btn{border:none;border-radius:24px;padding:11px 24px;font-family:'Fredoka';font-weight:600;font-size:15px;cursor:pointer;transition:.2s;}
+.btn-conf{background:var(--espuma);color:#022e3f;}
+.btn-conf:hover{background:#a6ebff;}
+.btn-conf.off{background:#0c425f;color:#5b87a0;cursor:not-allowed;}
+.btn-ref{background:var(--coral);color:#3a1206;}
+.btn-ref:hover{background:#ff9277;}
+.placar{font-weight:800;font-size:14px;}
+.placar.ok{color:var(--verde);}
+.placar.nao{color:var(--coral2);}
+
+.final{display:none;text-align:center;background:linear-gradient(135deg,#0a6e8e,#0f7d5c);border-radius:20px;padding:34px 22px;margin-top:20px;
+  border:2px solid var(--espuma);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.final.on{display:block;animation:pop .4s;}
+@keyframes pop{from{transform:scale(.92);opacity:0;}to{transform:scale(1);opacity:1;}}
+.final .big{font-size:60px;}
+.final h2{font-family:'Fredoka';font-size:26px;margin:8px 0;}
+.final p{font-size:15px;color:#eaffff;}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:linear-gradient(135deg,#0f7d5c,#0a5);
+  color:#fff;padding:11px 22px;border-radius:24px;font-weight:800;font-size:14px;box-shadow:0 6px 22px rgba(0,0,0,.4);z-index:200;
+  transition:.35s;opacity:0;}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1;}
+@media(max-width:480px){.sec-head .tit{font-size:15px;}.leitura p{font-size:15px;}}
+</style>
+</head>
+<body>
+<div class="bolhas" id="bolhas"></div>
+
+<div class="header">
+  <span class="selo">🤿 LEITURA ESTENDIDA COM FIXAÇÃO</span>
+  <h1>Mergulho nos Números Racionais</h1>
+  <p>Capítulo 6 • Matemática • 7º ano • Prova 23/06 • páginas 110–125</p>
+</div>
+
+<div class="barra-topo">
+  <div class="barra-info"><span>🌊 Profundidade do mergulho</span><span id="barTxt">0 de 6 estações</span></div>
+  <div class="barra-trilho"><div class="barra-fill" id="barFill"></div></div>
+</div>
+
+<div class="jornada" id="jornada"></div>
+
+<div class="wrap">
+  <div class="painel">
+    <div class="info">💾 Seu progresso fica salvo neste navegador.<br>
+      <span style="opacity:.8">Último salvamento: <b id="ultimo">—</b></span></div>
+    <div class="btns">
+      <button class="mini" onclick="exportar()">📥 Exportar</button>
+      <button class="mini" onclick="document.getElementById('imp').click()">📤 Importar</button>
+      <button class="mini zerar" onclick="zerar()">🗑️ Zerar</button>
+      <input type="file" id="imp" accept=".json" style="display:none" onchange="importar(event)">
+    </div>
+  </div>
+
+  <p style="text-align:center;color:var(--texto2);font-size:14px;margin-bottom:18px;">
+    🐠 Cada estação tem uma <b>leitura</b> e alguns <b>exercícios</b>. Acerte pelo menos <b>70%</b> para mergulhar mais fundo e abrir a próxima estação!
+  </p>
+
+  <div id="secoes"></div>
+
+  <div class="final" id="final">
+    <div class="big">🏆🐬</div>
+    <h2>Mergulho completo!</h2>
+    <p>Você passou por todas as estações e dominou os números racionais. Agora bora treinar no <b>Simulado</b> e revisar pelo <b>Resumo</b>!</p>
+  </div>
+</div>
+
+<div class="toast" id="toast">Salvo!</div>
+
+<script>
+// ---------- helper de fração ----------
+function fr(a,b){return `<span class="frac"><span class="num">${a}</span><span class="den">${b}</span></span>`;}
+
+// ---------- CONTEÚDO ----------
+const SECOES=[
+{
+ icone:"🌊", tit:"Estação 1 — O que são números racionais",
+ conteudo:`
+ <div class="leitura">
+   <p>Imagina que você está num barco prestes a mergulhar. Os <b>números inteiros</b> (…, −2, −1, 0, 1, 2, …) servem pra contar coisas redondinhas: 3 peixes, −2 metros. Mas no mundo real quase nada é tão exato! Você mergulha <b>1,32 metro</b>, gasta <span class="mat">${fr(3,5)}</span> do dinheiro do lanche, espera ${fr(1,4)} de hora… São números "quebrados".</p>
+   <p>Pra dar conta disso, a gente usa um conjunto maior: os <b>números racionais</b>, representados pela letra <span class="mat">ℚ</span>.</p>
+   <div class="destaque">Um <b>número racional</b> é todo número que pode ser escrito na forma de <b>fração</b> ${fr("a","b")}, onde <b>a</b> e <b>b</b> são números inteiros e <b>b ≠ 0</b> (o de baixo nunca pode ser zero!).</div>
+   <p>Dentro de ℚ cabe muita coisa: frações como ${fr(3,4)}, decimais como 0,8 e −78,44, dízimas como 0,333… e até os inteiros, porque todo inteiro também é fração:</p>
+   <div class="exemplo"><span class="et">EXEMPLOS</span>
+     • O número <b>5</b> é racional, pois 5 = ${fr(5,1)}.<br>
+     • <b>0,8</b> é racional, pois 0,8 = ${fr(8,10)} = ${fr(4,5)}.<br>
+     • <b>−22,37</b> é racional, pois pode virar ${fr("−2237","100")}.</p>
+   <h3>Uma família que mora dentro da outra</h3>
+   <p>Os conjuntos se encaixam como caixas: os <b>naturais (ℕ)</b> ficam dentro dos <b>inteiros (ℤ)</b>, que ficam dentro dos <b>racionais (ℚ)</b>.</p>
+   <div class="destaque" style="text-align:center;font-size:18px;"><b>ℕ ⊂ ℤ ⊂ ℚ</b></div>
+   <p>Por isso usamos os símbolos <b>∈</b> (pertence) e <b>∉</b> (não pertence). Exemplo: −6 <b>∉</b> ℕ (não tem natural negativo), mas −6 <b>∈</b> ℤ e −6 <b>∈</b> ℚ.</p>
+   <div class="postit">Todo número que cabe numa fração de inteiros é racional. Inteiros e decimais "comuns" são todos racionais!</div>
+   <div class="peg">cuidado com ℕ! Número negativo ou com vírgula <b>não</b> é natural. −6 e 0,5 NÃO pertencem a ℕ.</div>
+ </div>`,
+ ex:[
+  {q:`Qual é a forma certa de definir um número racional?`,
+   opts:["Qualquer número com vírgula","Todo número que pode ser escrito como fração "+fr("a","b")+" com a e b inteiros e b ≠ 0","Apenas os números positivos","Somente os números inteiros"],
+   correta:1,exp:`Racional é todo número que vira fração de inteiros, com o denominador diferente de zero. Isso inclui inteiros, decimais e dízimas."`},
+  {q:`Por que o número 7 também é racional?`,
+   opts:["Porque é positivo","Porque é ímpar","Porque pode ser escrito como "+fr(7,1),"Porque é maior que zero"],
+   correta:2,exp:`Todo inteiro vira fração com denominador 1: 7 = ${fr(7,1)}. Por isso ℤ está dentro de ℚ.`},
+  {q:`Complete: −4 ____ ℕ (naturais).`,
+   opts:["∈ (pertence)","∉ (não pertence)","= ","> "],
+   correta:1,exp:`Não existe natural negativo, então −4 ∉ ℕ. Mas atenção: −4 ∈ ℤ e −4 ∈ ℚ.`},
+  {q:`Qual relação entre os conjuntos está correta?`,
+   opts:["ℚ ⊂ ℤ ⊂ ℕ","ℕ ⊂ ℤ ⊂ ℚ","ℤ ⊂ ℕ ⊂ ℚ","ℚ ⊂ ℕ ⊂ ℤ"],
+   correta:1,exp:`Os naturais cabem nos inteiros, que cabem nos racionais: ℕ ⊂ ℤ ⊂ ℚ.`},
+  {q:`O número 0,5 pertence a qual(is) conjunto(s)?`,
+   opts:["Só a ℕ","Só a ℤ","A ℚ, mas não a ℕ nem a ℤ","A todos: ℕ, ℤ e ℚ"],
+   correta:2,exp:`0,5 tem vírgula, então não é natural nem inteiro. Mas 0,5 = ${fr(1,2)}, logo é racional: 0,5 ∈ ℚ.`}
+ ]
+},
+{
+ icone:"➗", tit:"Estação 2 — Transformar fração em decimal",
+ conteudo:`
+ <div class="leitura">
+   <p>Uma fração nada mais é do que uma <b>divisão esperando pra acontecer</b>: ${fr("a","b")} significa a ÷ b. Pra achar o decimal, é só dividir!</p>
+   <h3>Quando a conta "fecha": decimal exato</h3>
+   <p>Às vezes a divisão chega ao resto <b>zero</b>. Aí temos um <b>decimal exato</b>.</p>
+   <div class="exemplo"><span class="et">EXEMPLO</span> ${fr(3,4)} = 3 ÷ 4. Fazendo a conta: 0,75. Como a divisão terminou (resto 0), <b>0,75 é um decimal exato</b>.</div>
+   <div class="destaque"><b>Decimal exato:</b> tem uma quantidade <b>limitada</b> de casas depois da vírgula. A divisão termina.</div>
+   <h3>Quando a conta nunca acaba: dízima periódica</h3>
+   <p>Outras vezes a divisão <b>nunca</b> chega ao resto zero e começa a <b>repetir</b>. Isso é uma <b>dízima periódica</b>.</p>
+   <div class="exemplo"><span class="et">EXEMPLO</span> ${fr(2,7)} = 2 ÷ 7 = 0,285714285714… Os algarismos <b>285714</b> ficam se repetindo pra sempre. Escrevemos 0,(285714).</div>
+   <div class="destaque"><b>Dízima periódica:</b> depois da vírgula, um algarismo ou um grupo de algarismos se <b>repete infinitamente</b>. Esse grupo que repete chama-se <b>período</b>.</div>
+   <div class="exemplo"><span class="et">MAIS EXEMPLOS</span>
+     • ${fr(1,3)} = 0,333… → período 3<br>
+     • ${fr(1,9)} = 0,111… → período 1<br>
+     • ${fr(9,11)} = 0,8181… → período 81</div>
+   <div class="postit">Macete: divida o de cima pelo de baixo. Se a conta termina → decimal exato. Se começa a repetir → dízima periódica.</div>
+   <div class="peg">0,333… (com as reticências) é diferente de 0,333. O "…" mostra que continua pra sempre — é dízima!</div>
+ </div>`,
+ ex:[
+  {q:`Para transformar a fração ${fr(3,8)} em decimal, o que devemos fazer?`,
+   opts:["Multiplicar 3 por 8","Dividir 3 por 8","Somar 3 com 8","Dividir 8 por 3"],
+   correta:1,exp:`A fração é uma divisão do numerador pelo denominador: ${fr(3,8)} = 3 ÷ 8 = 0,375.`},
+  {q:`O resultado de ${fr(1,4)} é 0,25. Como classificamos esse número?`,
+   opts:["Dízima periódica","Decimal exato","Número inteiro","Número natural"],
+   correta:1,exp:`0,25 tem fim (a divisão fechou com resto zero), então é um decimal exato.`},
+  {q:`O número 0,444… (o 4 se repetindo) é:`,
+   opts:["Um decimal exato","Uma dízima periódica de período 4","Um número inteiro","Um erro de conta"],
+   correta:1,exp:`O 4 se repete infinitamente, então é dízima periódica. O período é 4.`},
+  {q:`Na dízima 0,8181…, qual é o período?`,
+   opts:["8","1","81","818"],
+   correta:2,exp:`O grupo que se repete é 81 (8181…). Logo o período é 81.`},
+  {q:`Qual destas frações vira uma DÍZIMA PERIÓDICA?`,
+   opts:[fr(1,2)+" = 0,5",fr(3,4)+" = 0,75",fr(1,3)+" = 0,333…",fr(1,5)+" = 0,2"],
+   correta:2,exp:`${fr(1,3)} = 0,333… nunca termina e o 3 se repete: é dízima. As outras são decimais exatos.`}
+ ]
+},
+{
+ icone:"🔄", tit:"Estação 3 — Transformar decimal em fração",
+ conteudo:`
+ <div class="leitura">
+   <p>Agora o caminho de volta: pegar um <b>decimal exato</b> e transformar em <b>fração</b>. O segredo é a <b>leitura</b> do número!</p>
+   <h3>Leia o número e ele já vira fração</h3>
+   <p>0,8 lê-se "oito <b>décimos</b>". Décimos = dividir por 10. Então 0,8 = ${fr(8,10)}, que simplificada vira ${fr(4,5)}.</p>
+   <div class="destaque">Regra de ouro: o <b>denominador</b> é uma potência de 10 com tantos zeros quantas forem as <b>casas depois da vírgula</b>.<br>
+   1 casa → /10 &nbsp;•&nbsp; 2 casas → /100 &nbsp;•&nbsp; 3 casas → /1000</div>
+   <div class="exemplo"><span class="et">EXEMPLOS</span>
+     • 0,12 (2 casas) = ${fr(12,100)} = ${fr(3,25)}<br>
+     • 0,032 (3 casas) = ${fr(32,1000)} = ${fr(4,125)}<br>
+     • 1,5 = ${fr(15,10)} = ${fr(3,2)}<br>
+     • 2,25 = ${fr(225,100)} = ${fr(9,4)}</div>
+   <div class="postit">Conte as casas depois da vírgula = quantidade de zeros do denominador. Depois simplifique até a fração ficar "irredutível" (não dá mais pra dividir).</div>
+   <div class="peg">o número de zeros é igual ao número de casas decimais, NÃO ao valor do número. 0,7 = ${fr(7,10)} (1 zero), e não ${fr(7,100)}.</div>
+ </div>`,
+ ex:[
+  {q:`Como se transforma 0,9 em fração?`,
+   opts:[fr(9,100),fr(9,10),fr(9,1),fr(90,10)],
+   correta:1,exp:`0,9 tem 1 casa decimal → denominador 10. Logo 0,9 = ${fr(9,10)}.`},
+  {q:`O decimal 0,07 vira qual fração?`,
+   opts:[fr(7,10),fr(7,100),fr(7,1000),fr(70,100)],
+   correta:1,exp:`0,07 tem 2 casas decimais → denominador 100. Logo 0,07 = ${fr(7,100)}.`},
+  {q:`Transformando 0,25 em fração irredutível, obtemos:`,
+   opts:[fr(25,100),fr(1,4),fr(1,2),fr(5,10)],
+   correta:1,exp:`0,25 = ${fr(25,100)}. Simplificando (÷25 em cima e embaixo) = ${fr(1,4)}.`},
+  {q:`Quantas casas decimais tem 0,008 e qual o denominador da fração?`,
+   opts:["1 casa → 10","2 casas → 100","3 casas → 1000","4 casas → 10000"],
+   correta:2,exp:`0,008 tem 3 casas → denominador 1000. Então 0,008 = ${fr(8,1000)} = ${fr(1,125)}.`},
+  {q:`O número 1,4 corresponde a qual fração irredutível?`,
+   opts:[fr(14,10),fr(7,5),fr(14,100),fr(1,4)],
+   correta:1,exp:`1,4 = ${fr(14,10)}, que simplificada (÷2) vira ${fr(7,5)}.`}
+ ]
+},
+{
+ icone:"📏", tit:"Estação 4 — Racionais na reta numérica",
+ conteudo:`
+ <div class="leitura">
+   <p>Pensa na reta numérica como a <b>corda do mergulhador</b>: o <b>0</b> é a superfície da água, pra cima ficam os positivos e pra baixo (mar adentro) ficam os negativos. Todo racional tem um lugar nessa corda.</p>
+   <h3>Frações entre 0 e 1</h3>
+   <p>Como ${fr(3,4)} = 0,75 está entre 0 e 1, dividimos o pedaço de 0 até 1 em <b>4 partes iguais</b> e marcamos na <b>3ª</b> marca.</p>
+   <div class="exemplo"><span class="et">EXEMPLO</span> Pra marcar ${fr(3,4)}: o denominador 4 diz em quantas partes dividir; o numerador 3 diz em qual marca parar.</div>
+   <h3>Frações maiores que 1</h3>
+   <p>${fr(3,2)} = 1 + ${fr(1,2)}, então fica <b>meio passo depois do 1</b> (entre 1 e 2). Truque: transforme em decimal pra saber entre quais inteiros está.</p>
+   <h3>Frações negativas</h3>
+   <p>−${fr(3,5)} é negativo, então está <b>entre −1 e 0</b>. Mesma ideia, só que pro lado dos negativos.</p>
+   <div class="postit">Pra saber entre quais inteiros um racional está, transforme em decimal. Ex.: ${fr(16,5)} = 3,2 → está entre 3 e 4.</div>
+   <div class="peg">nos negativos, "maior" é quem está mais perto do zero. −0,5 é MAIOR que −2, porque está mais perto da superfície.</div>
+ </div>`,
+ ex:[
+  {q:`A fração ${fr(3,4)} (= 0,75) fica em qual parte da reta?`,
+   opts:["Entre 0 e 1","Entre 1 e 2","Entre 2 e 3","Antes do 0 (negativo)"],
+   correta:0,exp:`0,75 é menor que 1 e maior que 0, então ${fr(3,4)} fica entre 0 e 1.`},
+  {q:`Entre quais inteiros está a fração ${fr(16,5)}?`,
+   opts:["Entre 1 e 2","Entre 2 e 3","Entre 3 e 4","Entre 4 e 5"],
+   correta:2,exp:`${fr(16,5)} = 16 ÷ 5 = 3,2. Logo está entre 3 e 4.`},
+  {q:`Onde fica o número −2,75 na reta?`,
+   opts:["Entre −2 e −1","Entre −3 e −2","Entre 2 e 3","Entre 0 e −1"],
+   correta:1,exp:`−2,75 é negativo e está entre −3 e −2 (mais perto de −3).`},
+  {q:`Para marcar ${fr(2,5)} na reta, em quantas partes dividimos o trecho de 0 a 1?`,
+   opts:["2 partes","5 partes","7 partes","10 partes"],
+   correta:1,exp:`O denominador (5) indica em quantas partes dividir. O numerador (2) indica a marca. Então 5 partes, parando na 2ª.`},
+  {q:`Qual número é MAIOR: −0,5 ou −2?`,
+   opts:["−2, porque o 2 é maior","−0,5, porque está mais perto do zero","São iguais","Não dá para comparar negativos"],
+   correta:1,exp:`Nos negativos, quem está mais perto do zero é maior. −0,5 > −2.`}
+ ]
+},
+{
+ icone:"⚖️", tit:"Estação 5 — Comparar números racionais",
+ conteudo:`
+ <div class="leitura">
+   <p>Comparar é decidir quem é <b>maior (&gt;)</b>, <b>menor (&lt;)</b> ou se são <b>iguais (=)</b>. Tem alguns jeitos espertos:</p>
+   <h3>1) Frações com o mesmo "de baixo"</h3>
+   <p>Se o denominador é igual, ganha quem tem o <b>numerador maior</b>.</p>
+   <div class="exemplo"><span class="et">EXEMPLO</span> ${fr(3,4)} e ${fr(1,4)}: mesmo denominador. Como 3 &gt; 1, então ${fr(3,4)} &gt; ${fr(1,4)}.</div>
+   <h3>2) Denominadores diferentes → denominador comum (mmc)</h3>
+   <p>Quando os "de baixo" são diferentes, achamos o <b>mmc</b> pra deixar os dois com o mesmo denominador.</p>
+   <div class="exemplo"><span class="et">EXEMPLO</span> ${fr(3,5)} e ${fr(4,6)}: mmc(5,6) = 30. Então ${fr(3,5)} = ${fr(18,30)} e ${fr(4,6)} = ${fr(20,30)}. Como 18 &lt; 20, ${fr(3,5)} &lt; ${fr(4,6)}.</div>
+   <h3>3) O jeito mais fácil: virar tudo decimal</h3>
+   <p>Transforme as frações em decimais e compare como números comuns.</p>
+   <div class="exemplo"><span class="et">EXEMPLO</span> Comparar 0,5 e ${fr(5,8)}: como ${fr(5,8)} = 0,625, e 0,5 &lt; 0,625, então 0,5 &lt; ${fr(5,8)}.</div>
+   <div class="postit">Na dúvida, transforme as frações em decimais — fica muito mais fácil de ver quem é maior!</div>
+   <div class="peg">denominador maior NÃO quer dizer fração maior. ${fr(1,2)} é MAIOR que ${fr(1,4)}, mesmo o 4 sendo maior que o 2!</div>
+ </div>`,
+ ex:[
+  {q:`Comparando ${fr(5,7)} e ${fr(2,7)} (mesmo denominador), qual é maior?`,
+   opts:[fr(2,7)+", porque 2 vem antes",fr(5,7)+", porque 5 > 2","São iguais","Falta o mmc para comparar"],
+   correta:1,exp:`Mesmo denominador: ganha o numerador maior. Como 5 > 2, então ${fr(5,7)} > ${fr(2,7)}.`},
+  {q:`Qual fração é MAIOR: ${fr(1,2)} ou ${fr(1,5)}?`,
+   opts:[fr(1,5)+", porque 5 > 2",fr(1,2)+", porque a parte é maior","São iguais","Impossível saber"],
+   correta:1,exp:`${fr(1,2)} = 0,5 e ${fr(1,5)} = 0,2. Logo ${fr(1,2)} > ${fr(1,5)}. Cuidado: denominador maior dá pedaço MENOR!`},
+  {q:`Para comparar ${fr(1,3)} e ${fr(2,5)}, qual o mmc dos denominadores 3 e 5?`,
+   opts:["8","15","30","5"],
+   correta:1,exp:`mmc(3,5) = 15. Daí ${fr(1,3)} = ${fr(5,15)} e ${fr(2,5)} = ${fr(6,15)}, então ${fr(1,3)} < ${fr(2,5)}.`},
+  {q:`Transformando para decimal, qual é maior: 0,75 ou ${fr(1,4)}?`,
+   opts:[fr(1,4)+" (= 0,25)","0,75","São iguais","Não dá para comparar"],
+   correta:1,exp:`${fr(1,4)} = 0,25. Como 0,75 > 0,25, então 0,75 > ${fr(1,4)}.`},
+  {q:`André separa ${fr(3,8)} do salário para contas e 0,4 para um curso. Onde ele coloca MAIS dinheiro?`,
+   opts:["Nas contas, "+fr(3,8)+" é maior","No curso, porque 0,4 > 0,375","São iguais","Falta informação"],
+   correta:1,exp:`${fr(3,8)} = 0,375. Como 0,4 > 0,375, ele investe mais no curso.`}
+ ]
+},
+{
+ icone:"🧭", tit:"Estação 6 — Módulo e números opostos",
+ conteudo:`
+ <div class="leitura">
+   <p>Última parada! Imagina dois mergulhadores: um sobe ${fr(5,2)} m acima da água (+${fr(5,2)}) e outro desce ${fr(5,2)} m (−${fr(5,2)}). Eles estão em <b>lados diferentes</b>, mas à <b>mesma distância</b> da superfície (o zero).</p>
+   <h3>Módulo (ou valor absoluto)</h3>
+   <div class="destaque"><b>Módulo</b> ou <b>valor absoluto</b> é a <b>distância</b> do número até o zero na reta. Como distância nunca é negativa, o módulo é sempre <b>positivo ou zero</b>.</div>
+   <p>Escrevemos com duas barrinhas: |número|.</p>
+   <div class="exemplo"><span class="et">EXEMPLOS</span>
+     • |−6| = 6 &nbsp;&nbsp; • |10,3| = 10,3 &nbsp;&nbsp; • |${fr("−5","2")}| = ${fr(5,2)} &nbsp;&nbsp; • |0| = 0</div>
+   <h3>Números opostos (ou simétricos)</h3>
+   <div class="destaque"><b>Números opostos</b> (ou simétricos) são dois números que ficam à <b>mesma distância do zero</b>, mas em <b>lados opostos</b>. Têm o <b>mesmo módulo</b>.</div>
+   <div class="exemplo"><span class="et">EXEMPLOS</span>
+     • O oposto de 2,5 é −2,5 &nbsp;&nbsp; • O oposto de −10 é 10 &nbsp;&nbsp; • O oposto de ${fr(3,4)} é −${fr(3,4)}</div>
+   <div class="postit">Módulo = "tira o sinal" e vira a distância (sempre ≥ 0). Oposto = "troca o sinal" (+ vira − e − vira +).</div>
+   <div class="peg">módulo e oposto são coisas diferentes! O módulo de −6 é 6 (distância). O oposto de −6 também é 6 (troca o sinal) — mas o oposto de +6 é −6, enquanto o módulo de +6 é +6.</div>
+ </div>`,
+ ex:[
+  {q:`O que é o módulo (valor absoluto) de um número?`,
+   opts:["O número sempre negativo","A distância do número até o zero na reta","O dobro do número","O número multiplicado por −1"],
+   correta:1,exp:`Módulo é a distância até o zero. Como distância não é negativa, o módulo é sempre positivo ou zero.`},
+  {q:`Quanto vale |−6|?`,
+   opts:["−6","6","0","−1"],
+   correta:1,exp:`A distância de −6 até o zero é 6. Então |−6| = 6.`},
+  {q:`Qual é o oposto (simétrico) de 2,5?`,
+   opts:["2,5","−2,5","5","0,25"],
+   correta:1,exp:`O oposto troca o sinal: o oposto de 2,5 é −2,5. Eles têm o mesmo módulo (2,5).`},
+  {q:`Quanto vale |0|?`,
+   opts:["Não existe","0","1","Infinito"],
+   correta:1,exp:`O zero está em cima da própria origem, então a distância é 0. Logo |0| = 0.`},
+  {q:`Dois números são OPOSTOS quando:`,
+   opts:["São exatamente iguais","Têm o mesmo módulo, mas sinais contrários","Um é o dobro do outro","Ambos são positivos"],
+   correta:1,exp:`Opostos ficam à mesma distância do zero, em lados contrários: mesmo módulo, sinais diferentes (ex.: −${fr(5,2)} e +${fr(5,2)}).`}
+ ]
+}
+];
+
+// ---------- ESTADO ----------
+const CHAVE='kit_mat_cap6_leitura_v1';
+const TOTAL=SECOES.length;
+let estado={resp:SECOES.map(s=>s.ex.map(()=>-1)), feita:SECOES.map(()=>false), aberta:0, data:null};
+
+// ---------- bolhas ----------
+(function(){const c=document.getElementById('bolhas');for(let i=0;i<14;i++){const b=document.createElement('div');b.className='bolha';const s=6+Math.random()*22;b.style.width=s+'px';b.style.height=s+'px';b.style.left=Math.random()*100+'%';b.style.animationDuration=(7+Math.random()*10)+'s';b.style.animationDelay=(-Math.random()*12)+'s';c.appendChild(b);}})();
+
+// ---------- render ----------
+function render(){
+ const cont=document.getElementById('secoes');cont.innerHTML='';
+ SECOES.forEach((s,si)=>{
+   const desbloq = si===0 || estado.feita[si-1];
+   const div=document.createElement('div');
+   div.className='secao'+(desbloq?'':' bloqueada')+(estado.aberta===si&&desbloq?' aberta':'');
+   div.id='sec'+si;
+   let opcoes=s.ex.map((e,ei)=>{
+     let opts=e.opts.map((o,oi)=>`<div class="opt" id="o_${si}_${ei}_${oi}" onclick="sel(${si},${ei},${oi})"><span class="l">${'ABCD'[oi]}</span><span>${o}</span></div>`).join('');
+     return `<div class="q" id="q_${si}_${ei}"><div class="qt">${ei+1}. ${e.q}</div>${opts}<div class="exp"><b>💡 </b>${e.exp}</div></div>`;
+   }).join('');
+   div.innerHTML=`
+     <div class="sec-head" onclick="toggle(${si})">
+       <span class="icone">${desbloq?s.icone:'🔒'}</span>
+       <span class="tit">${s.tit}</span>
+       <span class="estado ${estado.feita[si]?'ok':''}">${estado.feita[si]?'✅ concluída':(desbloq?'aberta':'bloqueada')}</span>
+     </div>
+     <div class="sec-body">
+       ${s.conteudo}
+       <div class="exerc">
+         <h4>🐡 Exercícios de fixação</h4>
+         <div class="sub">Responda todos e clique em "Conferir". Você precisa de pelo menos 70% (acertar ${Math.ceil(s.ex.length*0.7)} de ${s.ex.length}) para abrir a próxima estação.</div>
+         ${opcoes}
+         <div class="barra-sec">
+           <button class="btn btn-conf" id="conf_${si}" onclick="conferir(${si})">Conferir estação ✓</button>
+           <button class="btn btn-ref" id="ref_${si}" style="display:none" onclick="refazer(${si})">↻ Refazer exercícios</button>
+           <span class="placar" id="plac_${si}"></span>
+         </div>
+       </div>
+     </div>`;
+   cont.appendChild(div);
+ });
+ // reaplica seleções e correções
+ SECOES.forEach((s,si)=>{
+   s.ex.forEach((e,ei)=>{
+     const r=estado.resp[si][ei];
+     if(r>=0){const el=document.getElementById(`o_${si}_${ei}_${r}`);if(el)el.classList.add('sel');}
+   });
+   if(estado.feita[si]) mostrarCorrecao(si,true);
+ });
+ atualizarBarra();renderJornada();atualizarConfBtns();
+}
+
+function toggle(si){
+ const desbloq = si===0 || estado.feita[si-1];
+ if(!desbloq){toast('🔒 Conclua a estação anterior primeiro!');return;}
+ estado.aberta = (estado.aberta===si? -1 : si);
+ document.querySelectorAll('.secao').forEach((d,i)=>d.classList.toggle('aberta', i===estado.aberta && (i===0||estado.feita[i-1])));
+ salvar();
+}
+
+function sel(si,ei,oi){
+ if(estado.feita[si]) return; // travado após concluir
+ for(let o=0;o<SECOES[si].ex[ei].opts.length;o++){const el=document.getElementById(`o_${si}_${ei}_${o}`);if(el)el.classList.remove('sel');}
+ document.getElementById(`o_${si}_${ei}_${oi}`).classList.add('sel');
+ estado.resp[si][ei]=oi;
+ atualizarConfBtns();salvar();
+}
+
+function atualizarConfBtns(){
+ SECOES.forEach((s,si)=>{
+   const btn=document.getElementById('conf_'+si);if(!btn)return;
+   if(estado.feita[si]){btn.style.display='none';return;}
+   const todas = estado.resp[si].every(r=>r>=0);
+   btn.classList.toggle('off',!todas);
+ });
+}
+
+function conferir(si){
+ const s=SECOES[si];
+ if(!estado.resp[si].every(r=>r>=0)){toast('Responda todas as questões!');return;}
+ let acertos=0;s.ex.forEach((e,ei)=>{if(estado.resp[si][ei]===e.correta)acertos++;});
+ const minimo=Math.ceil(s.ex.length*0.7);
+ const passou=acertos>=minimo;
+ mostrarCorrecao(si,false);
+ const plac=document.getElementById('plac_'+si);
+ plac.textContent=`Você acertou ${acertos} de ${s.ex.length}.`;
+ if(passou){
+   estado.feita[si]=true;
+   plac.className='placar ok';plac.textContent+=' ✅ Estação concluída!';
+   document.getElementById('conf_'+si).style.display='none';
+   document.getElementById('sec'+si).querySelector('.estado').className='estado ok';
+   document.getElementById('sec'+si).querySelector('.estado').textContent='✅ concluída';
+   document.getElementById('sec'+si).querySelector('.icone').textContent=s.icone;
+   // abre próxima
+   if(si+1<TOTAL){
+     setTimeout(()=>{estado.aberta=si+1;render();document.getElementById('sec'+(si+1)).scrollIntoView({behavior:'smooth',block:'start'});toast('🌊 Próxima estação liberada!');},700);
+   } else {
+     toast('🏆 Você completou o mergulho!');
+   }
+ } else {
+   plac.className='placar nao';plac.textContent+=` Você precisa de ${minimo}. Tente de novo! ↻`;
+   document.getElementById('ref_'+si).style.display='inline-block';
+ }
+ atualizarBarra();renderJornada();salvar();
+}
+
+function mostrarCorrecao(si,jaFeita){
+ const s=SECOES[si];
+ s.ex.forEach((e,ei)=>{
+   const q=document.getElementById(`q_${si}_${ei}`);if(!q)return;
+   q.classList.add('corrigida');
+   const r=estado.resp[si][ei];
+   for(let o=0;o<e.opts.length;o++){
+     const el=document.getElementById(`o_${si}_${ei}_${o}`);if(!el)continue;
+     if(o===e.correta)el.classList.add('certa');
+     if(o===r&&r!==e.correta)el.classList.add('errada');
+   }
+ });
+}
+
+function refazer(si){
+ estado.resp[si]=SECOES[si].ex.map(()=>-1);
+ estado.feita[si]=false;
+ render();
+ document.getElementById('sec'+si).classList.add('aberta');
+ estado.aberta=si;
+ document.getElementById('sec'+si).scrollIntoView({behavior:'smooth',block:'start'});
+ salvar();
+}
+
+function atualizarBarra(){
+ const feitas=estado.feita.filter(Boolean).length;
+ const pct=Math.round(feitas/TOTAL*100);
+ document.getElementById('barFill').style.width=pct+'%';
+ document.getElementById('barTxt').textContent=`${feitas} de ${TOTAL} estações`;
+ document.getElementById('final').classList.toggle('on',feitas===TOTAL);
+}
+
+function renderJornada(){
+ const j=document.getElementById('jornada');j.innerHTML='';
+ SECOES.forEach((s,si)=>{
+   const desbloq=si===0||estado.feita[si-1];
+   const cls=estado.feita[si]?'feita':(estado.aberta===si&&desbloq?'atual':'');
+   const bola=estado.feita[si]?'✓':(desbloq?(si+1):'🔒');
+   const chip=document.createElement('div');
+   chip.className='j-chip '+cls;chip.onclick=()=>{toggle(si);if(si===estado.aberta)document.getElementById('sec'+si).scrollIntoView({behavior:'smooth',block:'start'});};
+   chip.style.cursor='pointer';
+   chip.innerHTML=`<span class="bola">${bola}</span> ${s.icone}`;
+   j.appendChild(chip);
+ });
+}
+
+// ---------- persistência ----------
+function salvar(){try{estado.data=new Date().toISOString();localStorage.setItem(CHAVE,JSON.stringify(estado));rotulo(estado.data);}catch(e){}}
+function carregar(){try{const d=localStorage.getItem(CHAVE);if(!d)return;const e=JSON.parse(d);
+  if(e.resp)estado.resp=e.resp;if(e.feita)estado.feita=e.feita;if(typeof e.aberta==='number')estado.aberta=e.aberta;estado.data=e.data;rotulo(e.data);}catch(e){}}
+function rotulo(iso){const el=document.getElementById('ultimo');if(!iso){el.textContent='—';return;}const d=new Date(iso);el.textContent=d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200);}
+function exportar(){const d=localStorage.getItem(CHAVE);if(!d){alert('Ainda não há progresso para exportar.');return;}const b=new Blob([d],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='progresso_leitura_mat_cap6.json';a.click();URL.revokeObjectURL(u);toast('📥 Exportado!');}
+function importar(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{JSON.parse(e.target.result);if(confirm('Isso vai substituir o progresso atual. Continuar?')){localStorage.setItem(CHAVE,e.target.result);toast('📤 Importado!');setTimeout(()=>location.reload(),700);}}catch(x){alert('Arquivo inválido.');}};r.readAsText(f);ev.target.value='';}
+function zerar(){if(!confirm('Tem certeza? Todo o progresso será apagado.'))return;localStorage.removeItem(CHAVE);toast('🗑️ Zerado!');setTimeout(()=>location.reload(),700);}
+
+carregar();render();
+</script>
+</body>
+</html>

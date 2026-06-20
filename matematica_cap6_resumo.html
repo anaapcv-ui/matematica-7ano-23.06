@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤿 Resumo — Mergulho nos Números Racionais | Cap. 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --espuma:#7fdfff;--areia:#ffe2a8;--coral:#ff7a59;--coral2:#ffb199;
+  --verde:#3ad29f;--verde-bg:#0c4a3c;--vermelho:#ff6b6b;--vermelho-bg:#5a1f1f;
+  --card:#0a4263;--card2:#0d5078;--borda:#1a6e98;--texto:#eaf7ff;--texto2:#a9d2e6;--amarelo:#ffd34d;--raio:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;color:var(--texto);background:linear-gradient(180deg,#021a2b,#04263b 24%,#063a55 60%,#0a4a6e);background-attachment:fixed;min-height:100vh;line-height:1.6;}
+.bolhas{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.bolha{position:absolute;bottom:-40px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.5),rgba(127,223,255,.08));animation:subir linear infinite;opacity:.45;}
+@keyframes subir{to{transform:translateY(-110vh);}}
+.header{position:relative;z-index:1;background:linear-gradient(135deg,#02485f,#0a6e8e);text-align:center;padding:32px 18px 28px;border-bottom:4px solid var(--espuma);}
+.header .selo{display:inline-block;background:rgba(127,223,255,.18);border:1px solid var(--espuma);color:var(--espuma);font-size:11px;font-weight:800;letter-spacing:2px;padding:4px 14px;border-radius:20px;margin-bottom:10px;}
+.header h1{font-family:'Fredoka';font-weight:700;font-size:clamp(24px,5vw,38px);text-shadow:0 2px 10px rgba(0,0,0,.3);}
+.header p{color:var(--texto2);font-size:14px;margin-top:6px;}
+.nav{position:sticky;top:0;z-index:20;background:rgba(4,38,59,.95);backdrop-filter:blur(6px);padding:10px 12px;border-bottom:1px solid var(--borda);
+  display:flex;gap:7px;overflow-x:auto;justify-content:flex-start;}
+.nav a{flex-shrink:0;background:var(--card);border:1px solid var(--borda);color:var(--texto2);text-decoration:none;font-size:12.5px;font-weight:800;padding:7px 13px;border-radius:20px;white-space:nowrap;transition:.2s;}
+.nav a:hover{border-color:var(--espuma);color:var(--espuma);}
+.wrap{max-width:820px;margin:0 auto;padding:24px 16px 90px;position:relative;z-index:1;}
+.bloco{margin-bottom:34px;}
+.bloco h2{font-family:'Fredoka';font-weight:600;font-size:23px;display:flex;align-items:center;gap:10px;margin-bottom:14px;color:#fff;}
+.bloco h2 .n{background:var(--espuma);color:#022e3f;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:18px;}
+.card{background:var(--card);border:1px solid var(--borda);border-radius:var(--raio);padding:18px 20px;margin-bottom:14px;box-shadow:0 8px 28px rgba(0,0,0,.25);}
+.card p{font-size:15.5px;margin-bottom:10px;color:#dff1fb;}
+.card p:last-child{margin-bottom:0;}
+.def{background:rgba(127,223,255,.1);border-left:4px solid var(--espuma);border-radius:8px;padding:12px 14px;margin:10px 0;font-size:15px;}
+.def b{color:var(--espuma);}
+.ex{background:#062c42;border:1px dashed var(--borda);border-radius:10px;padding:12px 14px;margin:10px 0;font-size:15px;}
+.ex .et{font-weight:800;color:var(--areia);font-size:11px;letter-spacing:1px;display:block;margin-bottom:6px;}
+.postit{background:linear-gradient(135deg,#fff4c2,#ffe89a);color:#5b4a12;border-radius:6px;padding:13px 15px;margin:10px 0;font-size:14.5px;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.25);transform:rotate(-.4deg);}
+.postit::before{content:"📌 Dica de prova: ";color:#a06a00;}
+.peg{background:var(--vermelho-bg);border:1px solid var(--vermelho);border-radius:8px;padding:13px 15px;margin:10px 0;font-size:14.5px;}
+.peg::before{content:"⚠️ Pegadinha: ";font-weight:800;color:var(--coral2);}
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 3px;line-height:1;font-weight:800;}
+.frac .num{padding:0 5px;border-bottom:2px solid currentColor;}
+.frac .den{padding:0 5px;}
+.mat{font-family:'Fredoka';color:var(--areia);font-weight:600;}
+/* FLIP CARDS */
+.flips{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:6px 0;}
+.flip{perspective:900px;height:130px;cursor:pointer;}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .55s;transform-style:preserve-3d;}
+.flip.virado .flip-in{transform:rotateY(180deg);}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center;border:2px solid var(--borda);}
+.flip-front{background:linear-gradient(135deg,var(--card2),var(--card));}
+.flip-front .fr-big{font-size:26px;}
+.flip-front small{color:var(--texto2);font-size:11px;margin-top:8px;}
+.flip-back{background:linear-gradient(135deg,#0a6e8e,#0f7d5c);transform:rotateY(180deg);}
+.flip-back .res{font-family:'Fredoka';font-size:20px;color:#fff;}
+.flip-back .tag{margin-top:8px;font-size:11px;font-weight:800;padding:3px 10px;border-radius:14px;}
+.tag.exato{background:var(--areia);color:#5b4a12;}
+.tag.dizima{background:var(--coral);color:#3a1206;}
+table.cmp{width:100%;border-collapse:collapse;margin:8px 0;font-size:14px;}
+table.cmp th,table.cmp td{border:1px solid var(--borda);padding:8px 10px;text-align:center;}
+table.cmp th{background:var(--card2);color:var(--espuma);}
+.glos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
+.glos div{background:#062c42;border:1px solid var(--borda);border-radius:10px;padding:11px 13px;font-size:14px;}
+.glos b{color:var(--espuma);}
+.foot{text-align:center;color:var(--texto2);font-size:13px;margin-top:20px;}
+@media(max-width:480px){.flip{height:120px;}}
+</style>
+</head>
+<body>
+<div class="bolhas" id="bolhas"></div>
+<div class="header">
+  <span class="selo">🤿 RESUMO INTERATIVO</span>
+  <h1>Mergulho nos Números Racionais</h1>
+  <p>Capítulo 6 • Matemática • 7º ano • Prova 23/06 • páginas 110–125</p>
+</div>
+<div class="nav">
+  <a href="#b1">① O conjunto ℚ</a>
+  <a href="#b2">② Fração→Decimal</a>
+  <a href="#b3">③ Decimal→Fração</a>
+  <a href="#b4">④ Reta numérica</a>
+  <a href="#b5">⑤ Comparar</a>
+  <a href="#b6">⑥ Módulo & opostos</a>
+  <a href="#b7">📖 Glossário</a>
+</div>
+
+<div class="wrap">
+
+<!-- B1 -->
+<div class="bloco" id="b1">
+  <h2><span class="n">1</span> O conjunto dos números racionais (ℚ)</h2>
+  <div class="card">
+    <div class="def">Número <b>racional</b> é todo número que pode ser escrito como uma fração <span class="mat">${''}<span class="frac"><span class="num">a</span><span class="den">b</span></span></span>, com <b>a</b> e <b>b</b> inteiros e <b>b ≠ 0</b>.</div>
+    <p>Dentro de ℚ cabem: <b>frações</b>, <b>decimais exatos</b>, <b>dízimas periódicas</b> e todos os <b>inteiros</b> (porque 5 = <span class="frac"><span class="num">5</span><span class="den">1</span></span>).</p>
+    <div class="ex"><span class="et">ENCAIXE DOS CONJUNTOS</span><span style="font-size:19px;" class="mat">ℕ ⊂ ℤ ⊂ ℚ</span> — os naturais cabem nos inteiros, que cabem nos racionais.</div>
+    <p>Símbolos: <b>∈</b> = pertence &nbsp;•&nbsp; <b>∉</b> = não pertence.</p>
+    <div class="postit">Decorou? Inteiro É racional. Decimal "comum" É racional. Só não vale colocar 0 embaixo da fração!</div>
+    <div class="peg">−6 e 0,5 NÃO pertencem a ℕ (não há natural negativo nem com vírgula). Mas pertencem a ℚ.</div>
+  </div>
+</div>
+
+<!-- B2 -->
+<div class="bloco" id="b2">
+  <h2><span class="n">2</span> Transformar fração em decimal</h2>
+  <div class="card">
+    <p>Fração é divisão: <span class="frac"><span class="num">a</span><span class="den">b</span></span> = a ÷ b. Faça a conta e veja o que acontece:</p>
+    <div class="def"><b>Decimal exato:</b> a divisão termina (resto 0). Tem poucas casas depois da vírgula. Ex.: <span class="frac"><span class="num">3</span><span class="den">4</span></span> = 0,75.</div>
+    <div class="def"><b>Dízima periódica:</b> a divisão nunca acaba e um grupo de algarismos (o <b>período</b>) se repete. Ex.: <span class="frac"><span class="num">2</span><span class="den">7</span></span> = 0,(285714).</div>
+    <p style="text-align:center;color:var(--texto2);font-size:13px;margin-top:14px;">👇 Toque nas cartas para virar e descobrir o decimal e o tipo:</p>
+    <div class="flips" id="flips"></div>
+    <div class="postit">A conta fecha → decimal EXATO. A conta repete sem fim → DÍZIMA periódica.</div>
+    <div class="peg">0,5 (decimal exato) é diferente de 0,5555… (dízima). As reticências "…" mostram que continua para sempre!</div>
+  </div>
+</div>
+
+<!-- B3 -->
+<div class="bloco" id="b3">
+  <h2><span class="n">3</span> Transformar decimal em fração</h2>
+  <div class="card">
+    <p>Só ler o número! O denominador é uma potência de 10 com tantos zeros quantas forem as <b>casas depois da vírgula</b>.</p>
+    <table class="cmp">
+      <tr><th>Decimal</th><th>Casas</th><th>Fração</th><th>Simplificada</th></tr>
+      <tr><td>0,8</td><td>1 → /10</td><td><span class="frac"><span class="num">8</span><span class="den">10</span></span></td><td><span class="frac"><span class="num">4</span><span class="den">5</span></span></td></tr>
+      <tr><td>0,12</td><td>2 → /100</td><td><span class="frac"><span class="num">12</span><span class="den">100</span></span></td><td><span class="frac"><span class="num">3</span><span class="den">25</span></span></td></tr>
+      <tr><td>2,25</td><td>2 → /100</td><td><span class="frac"><span class="num">225</span><span class="den">100</span></span></td><td><span class="frac"><span class="num">9</span><span class="den">4</span></span></td></tr>
+      <tr><td>0,008</td><td>3 → /1000</td><td><span class="frac"><span class="num">8</span><span class="den">1000</span></span></td><td><span class="frac"><span class="num">1</span><span class="den">125</span></span></td></tr>
+    </table>
+    <div class="postit">Conte as casas decimais = número de zeros do denominador. Depois simplifique até ficar irredutível.</div>
+    <div class="peg">o número de zeros depende das CASAS, não do valor. 0,7 = <span class="frac"><span class="num">7</span><span class="den">10</span></span> (1 zero), não <span class="frac"><span class="num">7</span><span class="den">100</span></span>.</div>
+  </div>
+</div>
+
+<!-- B4 -->
+<div class="bloco" id="b4">
+  <h2><span class="n">4</span> Racionais na reta numérica</h2>
+  <div class="card">
+    <p>A reta é como a corda do mergulho: <b>0</b> = superfície, positivos pra cima, negativos pra baixo.</p>
+    <div class="ex"><span class="et">COMO MARCAR UMA FRAÇÃO</span>O <b>denominador</b> diz em quantas partes dividir o trecho; o <b>numerador</b> diz em qual marca parar. Ex.: <span class="frac"><span class="num">3</span><span class="den">4</span></span> → divide de 0 a 1 em 4 partes, para na 3ª.</div>
+    <div class="ex"><span class="et">ENTRE QUAIS INTEIROS?</span>Transforme em decimal. Ex.: <span class="frac"><span class="num">16</span><span class="den">5</span></span> = 3,2 → entre 3 e 4. E −<span class="frac"><span class="num">3</span><span class="den">5</span></span> = −0,6 → entre −1 e 0.</div>
+    <div class="postit">Travou pra achar o lugar? Vira decimal que você descobre na hora entre quais inteiros está.</div>
+    <div class="peg">nos NEGATIVOS, o maior é quem está mais perto do zero: −0,5 &gt; −2 (não é o contrário!).</div>
+  </div>
+</div>
+
+<!-- B5 -->
+<div class="bloco" id="b5">
+  <h2><span class="n">5</span> Comparar números racionais</h2>
+  <div class="card">
+    <p>Comparar = decidir quem é <b>maior (&gt;)</b>, <b>menor (&lt;)</b> ou <b>igual (=)</b>.</p>
+    <div class="def"><b>Mesmo denominador:</b> ganha o numerador maior. <span class="frac"><span class="num">3</span><span class="den">4</span></span> &gt; <span class="frac"><span class="num">1</span><span class="den">4</span></span>.</div>
+    <div class="def"><b>Denominadores diferentes:</b> use o <b>mmc</b> para deixar o mesmo denominador, depois compare. <span class="frac"><span class="num">3</span><span class="den">5</span></span> e <span class="frac"><span class="num">4</span><span class="den">6</span></span> → mmc=30 → <span class="frac"><span class="num">18</span><span class="den">30</span></span> &lt; <span class="frac"><span class="num">20</span><span class="den">30</span></span>.</div>
+    <div class="def"><b>Jeito mais fácil:</b> transforme tudo em decimal e compare. 0,5 e <span class="frac"><span class="num">5</span><span class="den">8</span></span> (=0,625) → 0,5 &lt; <span class="frac"><span class="num">5</span><span class="den">8</span></span>.</div>
+    <div class="postit">Na prova, quase sempre vira decimal é o caminho mais rápido e seguro pra comparar.</div>
+    <div class="peg">denominador maior NÃO é fração maior! <span class="frac"><span class="num">1</span><span class="den">2</span></span> &gt; <span class="frac"><span class="num">1</span><span class="den">4</span></span>, mesmo o 4 sendo maior. Mais partes = pedaços menores.</div>
+  </div>
+</div>
+
+<!-- B6 -->
+<div class="bloco" id="b6">
+  <h2><span class="n">6</span> Módulo (valor absoluto) e números opostos</h2>
+  <div class="card">
+    <div class="def"><b>Módulo</b> (ou valor absoluto) é a <b>distância</b> do número até o zero. É sempre <b>positivo ou zero</b>. Escreve-se com barrinhas: |x|.</div>
+    <div class="ex"><span class="et">EXEMPLOS DE MÓDULO</span>|−6| = 6 &nbsp;•&nbsp; |10,3| = 10,3 &nbsp;•&nbsp; |−<span class="frac"><span class="num">5</span><span class="den">2</span></span>| = <span class="frac"><span class="num">5</span><span class="den">2</span></span> &nbsp;•&nbsp; |0| = 0</div>
+    <div class="def"><b>Números opostos</b> (ou simétricos): mesmo módulo, sinais contrários. Ficam à mesma distância do zero, em lados opostos.</div>
+    <div class="ex"><span class="et">EXEMPLOS DE OPOSTOS</span>oposto de 2,5 é −2,5 &nbsp;•&nbsp; oposto de −10 é 10 &nbsp;•&nbsp; oposto de <span class="frac"><span class="num">3</span><span class="den">4</span></span> é −<span class="frac"><span class="num">3</span><span class="den">4</span></span></div>
+    <div class="postit">Módulo = TIRA o sinal (vira distância, sempre ≥ 0). Oposto = TROCA o sinal.</div>
+    <div class="peg">não confunda! O módulo de −6 é 6. O oposto de −6 também é 6. Mas o módulo de +6 é +6, enquanto o oposto de +6 é −6.</div>
+  </div>
+</div>
+
+<!-- B7 -->
+<div class="bloco" id="b7">
+  <h2><span class="n">📖</span> Glossário rápido</h2>
+  <div class="card">
+    <div class="glos">
+      <div><b>ℚ (racionais):</b> números que viram fração de inteiros (b≠0).</div>
+      <div><b>Numerador / Denominador:</b> o de cima / o de baixo da fração.</div>
+      <div><b>Decimal exato:</b> divisão que termina (ex.: 0,75).</div>
+      <div><b>Dízima periódica:</b> decimal que repete sem fim (ex.: 0,333…).</div>
+      <div><b>Período:</b> o grupo de algarismos que se repete na dízima.</div>
+      <div><b>Fração irredutível:</b> já simplificada ao máximo.</div>
+      <div><b>mmc:</b> menor múltiplo comum — usado para denominador comum.</div>
+      <div><b>Reta numérica:</b> linha onde cada número tem seu lugar.</div>
+      <div><b>Módulo |x|:</b> distância até o zero (sempre ≥ 0).</div>
+      <div><b>Opostos/simétricos:</b> mesmo módulo, sinais trocados.</div>
+    </div>
+  </div>
+  <div class="foot">🐬 Revisou tudo? Agora teste no <b>Simulado</b> e veja quantos pontos você faz!</div>
+</div>
+
+</div>
+
+<script>
+// bolhas
+(function(){const c=document.getElementById('bolhas');for(let i=0;i<14;i++){const b=document.createElement('div');b.className='bolha';const s=6+Math.random()*22;b.style.width=s+'px';b.style.height=s+'px';b.style.left=Math.random()*100+'%';b.style.animationDuration=(7+Math.random()*10)+'s';b.style.animationDelay=(-Math.random()*12)+'s';c.appendChild(b);}})();
+// flip cards
+const CARTAS=[
+ {f:'<span class="num">3</span><span class="den">4</span>',r:'0,75',tipo:'exato'},
+ {f:'<span class="num">1</span><span class="den">3</span>',r:'0,333…',tipo:'dizima'},
+ {f:'<span class="num">1</span><span class="den">4</span>',r:'0,25',tipo:'exato'},
+ {f:'<span class="num">2</span><span class="den">7</span>',r:'0,(285714)',tipo:'dizima'},
+ {f:'<span class="num">1</span><span class="den">5</span>',r:'0,2',tipo:'exato'},
+ {f:'<span class="num">1</span><span class="den">9</span>',r:'0,111…',tipo:'dizima'},
+ {f:'<span class="num">9</span><span class="den">11</span>',r:'0,(81)',tipo:'dizima'},
+ {f:'<span class="num">12</span><span class="den">5</span>',r:'2,4',tipo:'exato'}
+];
+const cont=document.getElementById('flips');
+CARTAS.forEach((c,i)=>{
+ const d=document.createElement('div');d.className='flip';d.onclick=()=>d.classList.toggle('virado');
+ d.innerHTML=`<div class="flip-in">
+   <div class="flip-face flip-front"><span class="frac fr-big">${c.f}</span><small>toque para ver</small></div>
+   <div class="flip-face flip-back"><span class="res">${c.r}</span><span class="tag ${c.tipo}">${c.tipo==='exato'?'decimal exato':'dízima periódica'}</span></div>
+ </div>`;
+ cont.appendChild(d);
+});
+</script>
+</body>
+</html>

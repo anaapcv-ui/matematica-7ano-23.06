@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤿 Mergulho nos Números Racionais — Kit de Estudos Cap. 6</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,#021a2b 0%,#04263b 45%,#0a4a6e 100%);color:#eaf7ff;min-height:100vh;padding:20px;line-height:1.5;}
+  .container{max-width:900px;margin:0 auto;}
+  .capa{background:linear-gradient(135deg,#053a52 0%,#0a6e8e 55%,#0f7d5c 100%);border:3px solid #7fdfff;border-radius:20px;padding:40px 30px;text-align:center;box-shadow:0 0 40px rgba(127,223,255,.35);margin-bottom:25px;position:relative;overflow:hidden;}
+  .capa::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(0deg,transparent 0,transparent 28px,rgba(255,255,255,.04) 28px,rgba(255,255,255,.04) 30px);animation:onda 30s linear infinite;}
+  @keyframes onda{from{transform:translateY(0);}to{transform:translateY(-30px);}}
+  .capa .badge-mat{display:inline-block;background:#7fdfff;color:#022e3f;font-family:'Courier New',monospace;font-size:11px;font-weight:900;padding:4px 14px;border-radius:4px;letter-spacing:3px;margin-bottom:12px;position:relative;}
+  .capa h1{font-size:2.4em;color:#fff;text-shadow:0 0 15px #7fdfff,0 0 30px #2aa7d4;position:relative;margin-bottom:10px;}
+  .capa .sub{color:#d7f4ff;font-size:1.15em;position:relative;margin-bottom:15px;}
+  .capa .narr{color:#fff;font-size:1em;font-style:italic;position:relative;border-top:1px dashed #7fdfff;padding-top:12px;margin-top:12px;}
+  .intro{background:rgba(4,38,59,.7);border:2px solid #1a6e98;border-radius:12px;padding:20px 25px;margin-bottom:25px;backdrop-filter:blur(10px);}
+  .intro h2{color:#7fdfff;font-size:1.3em;margin-bottom:10px;}
+  .intro p{margin-bottom:8px;}
+  .intro b{color:#ffd34d;}
+  .materiais{display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:30px;}
+  .card-material{background:rgba(4,38,59,.7);border:2.5px solid;border-radius:15px;padding:22px 25px;text-decoration:none;color:#eaf7ff;display:block;transition:all .3s;position:relative;overflow:hidden;backdrop-filter:blur(10px);}
+  .card-material:hover{transform:translateY(-5px);box-shadow:0 8px 30px rgba(127,223,255,.4);}
+  .card-material::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);transition:left .6s;}
+  .card-material:hover::before{left:100%;}
+  .card-1{border-color:#7fdfff;}.card-1 .card-titulo{color:#aef0ff;}.card-1:hover{border-color:#fff;}
+  .card-2{border-color:#3ad29f;}.card-2 .card-titulo{color:#8df0c8;}.card-2:hover{border-color:#cdfbe8;}
+  .card-3{border-color:#ff7a59;}.card-3 .card-titulo{color:#ffb199;}.card-3:hover{border-color:#ffd6c9;}
+  .card-4{border-color:#ffd34d;}.card-4 .card-titulo{color:#ffe28a;}.card-4:hover{border-color:#fff3c9;}
+  .card-cabecalho{display:flex;align-items:center;gap:15px;margin-bottom:12px;flex-wrap:wrap;}
+  .card-icone{font-size:2.5em;flex-shrink:0;}
+  .card-titulo{font-size:1.4em;font-weight:900;margin:0;flex:1;min-width:200px;}
+  .card-etiqueta{background:rgba(127,223,255,.18);color:#7fdfff;padding:4px 12px;border-radius:15px;font-size:.8em;border:1px solid #7fdfff;font-weight:700;flex-shrink:0;}
+  .card-descricao{color:#cfe9f5;font-size:1em;margin-bottom:12px;line-height:1.5;}
+  .card-info{display:flex;gap:15px;flex-wrap:wrap;font-size:.9em;color:#a9d2e6;}
+  .card-info span{background:rgba(0,0,0,.3);padding:4px 12px;border-radius:12px;border:1px solid rgba(26,110,152,.5);}
+  .card-acessar{margin-top:15px;color:#fff;font-weight:700;text-align:right;font-size:1em;}
+  .card-acessar::after{content:" →";margin-left:4px;transition:margin .3s;}
+  .card-material:hover .card-acessar::after{margin-left:12px;}
+  .cronograma{background:rgba(4,38,59,.7);border:2px solid #3ad29f;border-radius:15px;padding:22px 25px;margin-bottom:25px;backdrop-filter:blur(10px);}
+  .cronograma h2{color:#8df0c8;font-size:1.4em;margin-bottom:15px;border-bottom:1px solid #3ad29f;padding-bottom:8px;}
+  .dia{background:rgba(0,0,0,.3);border-radius:10px;padding:14px 18px;margin-bottom:12px;border-left:4px solid #3ad29f;}
+  .dia-titulo{color:#8df0c8;font-weight:900;font-size:1.1em;margin-bottom:6px;}
+  .dia-conteudo{color:#eaf7ff;font-size:.95em;}
+  .dia-conteudo b{color:#ffd34d;}
+  .dica-mae{background:rgba(255,122,89,.12);border:2px dashed #ff7a59;border-radius:12px;padding:18px 22px;margin-bottom:25px;color:#ffe0d2;}
+  .dica-mae h2{color:#ff7a59;font-size:1.2em;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .dica-mae p{margin-bottom:8px;font-size:.95em;}
+  .dica-mae b{color:#ffd34d;}
+  .dica-mae code{background:rgba(0,0,0,.4);padding:2px 8px;border-radius:4px;font-family:'Courier New',monospace;color:#ffb199;font-weight:700;}
+  .aviso{background:rgba(127,223,255,.12);border:1.5px dashed #7fdfff;border-radius:10px;padding:14px 18px;margin-bottom:25px;color:#dff4ff;font-size:.95em;}
+  .aviso b{color:#7fdfff;}
+  .rodape{text-align:center;color:#7fdfff;font-style:italic;padding:20px;border-top:1px dashed #7fdfff;margin-top:20px;}
+  @media(max-width:600px){.capa h1{font-size:1.6em;}.card-titulo{font-size:1.15em;}.card-icone{font-size:2em;}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="capa">
+    <div class="badge-mat">MATEMÁTICA • 7º ANO • CAP. 6</div>
+    <h1>🤿 Mergulho nos Números Racionais 🌊</h1>
+    <div class="sub">Kit de Estudos — Frações, decimais, reta numérica e módulo</div>
+    <div class="narr">Bem-vinda, jovem aprendiz! Coloca o snorkel e bora mergulhar. São 4 materiais que levam você do raso ao fundo do mar dos números racionais — passo a passo, sem afobação! 🐠</div>
+  </div>
+
+  <div class="intro">
+    <h2>🧭 Como funciona</h2>
+    <p>Este é um <b>kit de estudos completo</b> para a prova de Matemática do 7º ano (Cap. 6 — Números Racionais, pp. 110–125, prova em <b>23/06</b>). São <b>4 materiais</b> que se completam:</p>
+    <p>1️⃣ Aprenda com a <b>Leitura Estendida</b>, depois 2️⃣ revise com o <b>Resumo Interativo</b>, 3️⃣ teste-se no <b>Simulado</b> e 4️⃣ leve o <b>Mapa Mental impresso</b> no dia da prova.</p>
+    <p>Os materiais em HTML <b>salvam o progresso automaticamente</b> no navegador. Pode fechar e voltar depois — continua de onde parou.</p>
+  </div>
+
+  <div class="aviso">
+    💾 <b>Sobre o salvamento:</b> o progresso fica salvo no <b>navegador específico</b> em uso (Chrome do celular ≠ Chrome do computador). Para levar o progresso de um aparelho para outro, use os botões "📥 Exportar" e "📤 Importar" dentro de cada material.
+  </div>
+
+  <div class="materiais">
+
+    <a href="matematica_cap6_leitura_estendida.html" class="card-material card-1">
+      <div class="card-cabecalho">
+        <div class="card-icone">📚</div>
+        <div class="card-titulo">Leitura Estendida com Fixação</div>
+        <div class="card-etiqueta">⭐ COMECE AQUI</div>
+      </div>
+      <div class="card-descricao">
+        O conteúdo completo dividido em 6 estações de mergulho (o conjunto ℚ, fração↔decimal, decimal→fração, reta numérica, comparação, módulo e opostos), com 30 exercícios de fixação. A próxima estação só abre quando você acerta pelo menos 70% — garante o domínio antes de avançar.
+      </div>
+      <div class="card-info">
+        <span>⏱️ 60-90 min</span>
+        <span>🎯 6 estações</span>
+        <span>📝 30 exercícios</span>
+        <span>🔒 Bloqueio 70%</span>
+      </div>
+      <div class="card-acessar">Iniciar o mergulho</div>
+    </a>
+
+    <a href="matematica_cap6_resumo.html" class="card-material card-2">
+      <div class="card-cabecalho">
+        <div class="card-icone">🐚</div>
+        <div class="card-titulo">Resumo Interativo</div>
+        <div class="card-etiqueta">🔄 REVISÃO RÁPIDA</div>
+      </div>
+      <div class="card-descricao">
+        Resumo visual em 6 blocos com definições, exemplos, post-its de dica, pegadinhas destacadas e 8 flip cards de fração→decimal. Inclui um glossário com os 10 termos-chave. Ideal para revisar antes da prova.
+      </div>
+      <div class="card-info">
+        <span>⏱️ 15-20 min</span>
+        <span>📑 6 blocos</span>
+        <span>🎴 8 flip cards</span>
+        <span>📖 Glossário</span>
+      </div>
+      <div class="card-acessar">Abrir o resumo</div>
+    </a>
+
+    <a href="matematica_cap6_simulado.html" class="card-material card-3">
+      <div class="card-cabecalho">
+        <div class="card-icone">🏆</div>
+        <div class="card-titulo">Simulado Interativo</div>
+        <div class="card-etiqueta">⚔️ DESAFIO FINAL</div>
+      </div>
+      <div class="card-descricao">
+        30 questões inéditas cobrindo todo o conteúdo da prova: conjunto ℚ, fração↔decimal, dízimas, reta numérica, comparação, módulo e opostos. Gabarito travado por código de liberação (entregue ao adulto responsável) e feedback comentado em cada questão.
+      </div>
+      <div class="card-info">
+        <span>⏱️ 45-60 min</span>
+        <span>📋 30 questões</span>
+        <span>🔑 Código de liberação</span>
+        <span>📊 Feedback completo</span>
+      </div>
+      <div class="card-acessar">Encarar o desafio</div>
+    </a>
+
+    <a href="matematica_cap6_mapa_mental.pdf" class="card-material card-4">
+      <div class="card-cabecalho">
+        <div class="card-icone">🗺️</div>
+        <div class="card-titulo">Mapa Mental (PDF para imprimir)</div>
+        <div class="card-etiqueta">📌 DIA DA PROVA</div>
+      </div>
+      <div class="card-descricao">
+        Folha A4 paisagem com 4 painéis coloridos (conjunto ℚ, fração↔decimal, reta & comparação, módulo & opostos), as regras essenciais e uma faixa de macetes. Imprima e cole na parede, ou leve dobrado no caderno no dia da prova!
+      </div>
+      <div class="card-info">
+        <span>🖨️ A4 paisagem</span>
+        <span>📄 1 página</span>
+        <span>🎨 Colorido</span>
+        <span>📌 Para imprimir</span>
+      </div>
+      <div class="card-acessar">Abrir o PDF</div>
+    </a>
+
+  </div>
+
+  <div class="cronograma">
+    <h2>📅 Cronograma sugerido (2 dias)</h2>
+    <div class="dia">
+      <div class="dia-titulo">📅 DIA 1 — Aprender e Fixar (~1h30 a 2h)</div>
+      <div class="dia-conteudo">
+        Comece pela <b>Leitura Estendida</b> (60-90 min) passando pelas 6 estações na ordem. Depois dê uma olhada no <b>Resumo Interativo</b> (10-15 min) para começar a fixar.
+      </div>
+    </div>
+    <div class="dia">
+      <div class="dia-titulo">📅 DIA 2 — Revisar e Simular (~1h15 a 1h30)</div>
+      <div class="dia-conteudo">
+        Releia o <b>Resumo</b> com atenção, especialmente os post-its e pegadinhas (15-20 min). Em seguida, faça o <b>Simulado</b> completo (45-60 min) sem consultar nada. No final, revise as questões erradas no gabarito e volte à Leitura Estendida nas estações com mais erro.
+      </div>
+    </div>
+    <div class="dia">
+      <div class="dia-titulo">⚔️ MANHÃ DA PROVA (5-10 min)</div>
+      <div class="dia-conteudo">
+        Apenas uma olhada rápida no <b>Mapa Mental</b> impresso. <b>Não estude conteúdo novo!</b> Confie no que estudou.
+      </div>
+    </div>
+  </div>
+
+  <div class="dica-mae">
+    <h2>👩 Dica para a mãe</h2>
+    <p><b>Sobre o código de liberação do simulado:</b></p>
+    <p>Quando a estudante terminar o simulado, vai aparecer um código no formato <code>SIM-XX-YY</code> (ex.: <code>SIM-22-KM</code>). O número do meio é o total de acertos — se for ≥ <b>19 acertos</b> (de 30), a meta foi alcançada (≈ 64%). Você pode então liberar o gabarito comentado digitando o código que ela te mostrar.</p>
+    <p><b>Assuntos que mais confundem (fique de olho):</b></p>
+    <p>As maiores pegadinhas do capítulo são: confundir <b>módulo</b> com <b>oposto</b>, achar que denominador maior = fração maior, e comparar números <b>negativos</b> (o mais perto do zero é o maior). Se errar muito esses, peça para voltar às estações 5 e 6 da Leitura.</p>
+    <p><b>Sobre o Mapa Mental:</b></p>
+    <p>Imprima o PDF colorido (se possível) e cole na parede do quarto de estudo. É a peça que faz diferença no dia da prova, porque ela revê todas as regras em segundos.</p>
+  </div>
+
+  <div class="rodape">
+    🐬 Que cada fração vire decimal sem susto e que nenhuma pegadinha te pegue no fundo do mar. Boa prova, jovem aprendiz! 🌊✨
+  </div>
+
+</div>
+</body>
+</html>

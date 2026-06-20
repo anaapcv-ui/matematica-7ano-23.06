@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📋 Simulado — Números Racionais | Cap. 6</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --espuma:#7fdfff;--areia:#ffe2a8;--coral:#ff7a59;--verde:#1a7a3a;--verde-bg:#0c4a3c;
+  --vermelho:#e23b3b;--vermelho-bg:#5a1f1f;--card:#0a4263;--card2:#0d5078;--borda:#1a6e98;
+  --texto:#eaf7ff;--texto2:#a9d2e6;--cinza:#7fa6bd;--raio:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;color:var(--texto);background:linear-gradient(180deg,#021522,#04263b 30%,#063a55);background-attachment:fixed;min-height:100vh;}
+.header{background:linear-gradient(135deg,#021522,#053a52);text-align:center;padding:24px 18px;position:relative;border-bottom:4px solid var(--vermelho);}
+.header .selo{display:inline-block;background:rgba(226,59,59,.25);border:1px solid rgba(226,59,59,.6);color:#ffb3b3;font-size:10px;font-weight:800;letter-spacing:2px;padding:3px 12px;border-radius:5px;margin-bottom:8px;}
+.header h1{font-family:'Fredoka';font-weight:700;font-size:clamp(22px,5vw,32px);}
+.header p{color:var(--texto2);font-size:13px;margin-top:4px;}
+.resultado-barra{display:none;background:linear-gradient(135deg,#021522,#053a52);padding:12px 20px;text-align:center;position:sticky;top:0;z-index:150;box-shadow:0 4px 16px rgba(0,0,0,.3);}
+.resultado-barra.visivel{display:block;}
+.rb-inner{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;max-width:720px;margin:0 auto;}
+.rb-nota{font-family:'Fredoka';font-size:20px;font-weight:700;}
+.rb-codigo{background:rgba(226,59,59,.2);border:1px solid rgba(226,59,59,.5);padding:4px 14px;border-radius:6px;font-family:monospace;font-size:18px;font-weight:900;letter-spacing:2px;color:#ffb3b3;}
+.rb-status{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;}
+.rb-status.bloqueado{background:rgba(226,59,59,.2);color:#ffb3b3;}
+.rb-status.liberado{background:rgba(58,210,159,.2);color:#9af5cf;}
+.progress-container{background:var(--card);border-bottom:1px solid var(--borda);padding:13px 20px;position:sticky;top:0;z-index:100;}
+.progress-info{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;font-size:13px;font-weight:700;color:var(--texto2);}
+.progress-bar{height:8px;background:#062c42;border-radius:4px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--vermelho),#ff6b6b);border-radius:4px;transition:width .4s;width:0;}
+.content{max-width:720px;margin:0 auto;padding:20px 16px 110px;}
+.painel{background:var(--card);border:1px solid var(--borda);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:12px;}
+.painel .info{color:var(--texto2);flex:1;min-width:200px;}
+.painel .info b{color:var(--texto);}
+.bs{display:flex;gap:6px;flex-wrap:wrap;}
+.mini{background:transparent;border:1px solid var(--borda);color:var(--texto2);padding:5px 11px;border-radius:16px;cursor:pointer;font-size:11px;font-weight:800;font-family:'Nunito';transition:.2s;}
+.mini:hover{border-color:var(--espuma);color:var(--espuma);}
+.mini.zerar:hover{border-color:var(--vermelho);color:var(--vermelho);}
+.q-card{background:var(--card);border:1px solid var(--borda);border-radius:var(--raio);padding:18px;margin-bottom:13px;transition:border-color .3s;}
+.q-card.respondida{border-color:var(--verde);}
+.q-card.faltando{border-color:var(--vermelho);animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:#062c42;font-size:12px;font-weight:800;color:var(--texto2);margin-bottom:10px;}
+.q-card.respondida .q-num{background:var(--verde);color:#fff;}
+.q-texto{font-size:15px;font-weight:700;line-height:1.55;margin-bottom:13px;}
+.opcoes{display:flex;flex-direction:column;gap:8px;}
+.opcao{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:2px solid var(--borda);border-radius:8px;cursor:pointer;transition:.2s;font-size:14.5px;color:var(--texto2);user-select:none;}
+.opcao:hover{border-color:var(--espuma);background:rgba(127,223,255,.07);}
+.opcao.selecionada{border-color:var(--espuma);background:rgba(127,223,255,.14);color:var(--texto);font-weight:700;}
+.opcao-letra{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;font-size:12px;font-weight:800;background:#062c42;color:var(--texto2);flex-shrink:0;}
+.opcao.selecionada .opcao-letra{background:var(--espuma);color:#022e3f;}
+.q-card.bloqueada .opcao{cursor:default;pointer-events:none;}
+.q-card.bloqueada .opcao.selecionada.correta{border-color:var(--verde);background:var(--verde-bg);}
+.q-card.bloqueada .opcao.selecionada.correta .opcao-letra{background:var(--verde);color:#fff;}
+.q-card.bloqueada .opcao.selecionada.errada{border-color:var(--vermelho);background:var(--vermelho-bg);}
+.q-card.bloqueada .opcao.selecionada.errada .opcao-letra{background:var(--vermelho);color:#fff;}
+.q-card.bloqueada .opcao.resposta-certa:not(.selecionada){border-color:var(--verde);background:var(--verde-bg);}
+.q-card.bloqueada .opcao.resposta-certa:not(.selecionada) .opcao-letra{background:var(--verde);color:#fff;}
+.feedback{display:none;margin-top:13px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.55;}
+.feedback.acertou{background:var(--verde-bg);border-left:4px solid var(--verde);}
+.feedback.errou{background:var(--vermelho-bg);border-left:4px solid var(--vermelho);}
+.feedback-titulo{font-weight:800;font-size:13px;margin-bottom:4px;}
+.feedback.acertou .feedback-titulo{color:#9af5cf;}
+.feedback.errou .feedback-titulo{color:#ffb3b3;}
+.feedback-erradas{margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);color:var(--cinza);font-size:12.5px;}
+.feedback-erradas p{margin-bottom:3px;}
+.feedback b{color:var(--espuma);}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--borda);padding:13px 20px;display:flex;justify-content:center;gap:12px;align-items:center;z-index:100;}
+.btn-enviar{padding:12px 32px;border:none;border-radius:24px;font-family:'Fredoka';font-size:16px;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-enviar.desabilitado{background:#062c42;color:var(--cinza);cursor:not-allowed;}
+.btn-enviar.ativo{background:var(--vermelho);color:#fff;box-shadow:0 4px 12px rgba(226,59,59,.4);}
+.btn-enviar.ativo:hover{background:#c52f2f;}
+.aviso-faltam{font-size:12px;color:#ffb3b3;font-weight:700;display:none;}
+.resultado-overlay{display:none;position:fixed;inset:0;background:rgba(2,21,34,.94);z-index:200;justify-content:center;align-items:center;padding:20px;}
+.resultado-overlay.visivel{display:flex;}
+.resultado-card{background:var(--card);border:1px solid var(--borda);border-radius:18px;padding:32px 26px;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:pop .3s;}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.resultado-emoji{font-size:54px;margin-bottom:10px;}
+.resultado-titulo{font-family:'Fredoka';font-size:24px;font-weight:700;}
+.resultado-nota{font-size:46px;font-weight:900;color:var(--espuma);margin:10px 0;font-family:'Fredoka';}
+.resultado-msg{font-size:14px;color:var(--texto2);margin-bottom:14px;line-height:1.5;}
+.codigo-box{background:var(--vermelho-bg);border:2px dashed var(--vermelho);border-radius:8px;padding:14px;margin:14px 0;}
+.codigo-label{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#ffb3b3;margin-bottom:6px;}
+.codigo-valor{font-family:monospace;font-size:28px;font-weight:900;color:var(--texto);letter-spacing:3px;}
+.codigo-instrucao{font-size:11px;color:var(--texto2);margin-top:6px;}
+.btn-fechar{margin-top:10px;padding:8px 20px;background:transparent;border:1px solid var(--borda);border-radius:8px;font-family:'Nunito';font-size:13px;color:var(--texto2);cursor:pointer;}
+.trava-msg{display:none;text-align:center;padding:20px;font-size:14px;color:var(--texto2);background:var(--card);border:1px solid var(--borda);border-radius:var(--raio);margin-bottom:14px;}
+.trava-msg.visivel{display:block;}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);background:linear-gradient(135deg,#0f7d5c,#0a5);color:#fff;padding:10px 20px;border-radius:22px;z-index:250;font-weight:800;font-size:13px;opacity:0;transition:.35s;}
+.toast.visivel{transform:translateX(-50%) translateY(0);opacity:1;}
+.frac{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;line-height:1;font-weight:800;}
+.frac .num{padding:0 4px;border-bottom:2px solid currentColor;}
+.frac .den{padding:0 4px;}
+@media(max-width:480px){.q-card{padding:15px;}.opcao{padding:10px 12px;}.resultado-nota{font-size:38px;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="selo">SIMULADO COMPLETO • 30 QUESTÕES</div>
+  <h1>📋 Simulado — Números Racionais</h1>
+  <p>Cap. 6 • Matemática 7º ano • pp. 110–125 • Prova 23/06</p>
+</div>
+<div class="resultado-barra" id="resultadoBarra">
+  <div class="rb-inner">
+    <span class="rb-nota" id="rbNota">📋 0/30</span><span>🔑</span>
+    <span class="rb-codigo" id="rbCodigo">---</span>
+    <span class="rb-status bloqueado" id="rbStatus">🔒 Gabarito bloqueado</span>
+  </div>
+</div>
+<div class="progress-container" id="progressContainer">
+  <div class="progress-info"><span id="progTexto">0 de 30 respondidas</span><span id="progPct">0%</span></div>
+  <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+</div>
+<div class="content">
+  <div class="painel">
+    <div class="info">💾 Progresso salvo automaticamente neste navegador<br><span style="font-size:11px;opacity:.8">Último salvamento: <b id="ultimo-salvar">—</b></span></div>
+    <div class="bs">
+      <button class="mini" onclick="exportarProgresso()">📥 Exportar</button>
+      <button class="mini" onclick="document.getElementById('input-importar').click()">📤 Importar</button>
+      <button class="mini zerar" onclick="zerarProgresso()">🗑️ Zerar</button>
+      <input type="file" id="input-importar" accept=".json" style="display:none" onchange="importarProgresso(event)">
+    </div>
+  </div>
+  <div id="simArea"></div>
+</div>
+<div class="bottom-bar" id="bottomBar">
+  <span class="aviso-faltam" id="avisoFaltam"></span>
+  <button class="btn-enviar desabilitado" id="btnEnviar" onclick="tentarEnviar()">Enviar Simulado</button>
+</div>
+<div class="resultado-overlay" id="resultadoOverlay">
+  <div class="resultado-card">
+    <div class="resultado-emoji" id="resEmoji">🎯</div>
+    <div class="resultado-titulo" id="resTitulo">Resultado</div>
+    <div class="resultado-nota" id="resNota">0/30</div>
+    <div class="resultado-msg" id="resMsg"></div>
+    <div class="codigo-box">
+      <div class="codigo-label">🔑 Código de Liberação</div>
+      <div class="codigo-valor" id="resCodigo">---</div>
+      <div class="codigo-instrucao">Mostre este código para um adulto, para liberar o gabarito comentado.</div>
+    </div>
+    <button class="btn-fechar" onclick="fecharResultado()">Fechar</button>
+  </div>
+</div>
+<div class="toast" id="toast">💾 Salvo!</div>
+
+<script>
+function fr(a,b){return `<span class="frac"><span class="num">${a}</span><span class="den">${b}</span></span>`;}
+const SIM=[
+ {q:`Qual é a definição correta de número racional?`,
+  opts:["Qualquer número positivo","Todo número que pode ser escrito como fração "+fr("a","b")+" com a e b inteiros e b ≠ 0","Apenas os números com vírgula","Somente os números inteiros"],
+  correta:1,explicacao:"Racional é todo número que vira fração de inteiros, com o de baixo (denominador) diferente de zero.",
+  erradas:{0:"Existem racionais negativos também, como −"+fr(3,4)+".",2:"Os inteiros, que não têm vírgula, também são racionais.",3:"Frações e decimais também são racionais, não só inteiros."}},
+
+ {q:`Para transformar a fração ${fr(3,8)} em número decimal, devemos:`,
+  opts:["Multiplicar 3 por 8","Dividir 3 por 8","Dividir 8 por 3","Somar 3 com 8"],
+  correta:1,explicacao:"A fração é uma divisão do numerador pelo denominador: "+fr(3,8)+" = 3 ÷ 8 = 0,375.",
+  erradas:{0:"Fração é divisão, não multiplicação.",2:"É o de cima dividido pelo de baixo: 3 ÷ 8, não 8 ÷ 3.",3:"Somar não transforma fração em decimal."}},
+
+ {q:`O resultado de ${fr(1,4)} é 0,25. Como classificamos esse número?`,
+  opts:["Dízima periódica","Decimal exato","Número inteiro","Número natural"],
+  correta:1,explicacao:"A divisão terminou (resto zero) e tem poucas casas: é um decimal exato.",
+  erradas:{0:"Não há repetição infinita, então não é dízima.",2:"0,25 tem vírgula, não é inteiro.",3:"0,25 não é natural (naturais não têm vírgula)."}},
+
+ {q:`O número −6 pertence a quais conjuntos?`,
+  opts:["Apenas a ℕ (naturais)","A ℤ e a ℚ, mas não a ℕ","Apenas a ℚ","A nenhum conjunto"],
+  correta:1,explicacao:"−6 é inteiro (ℤ) e racional (ℚ), mas não é natural (não há natural negativo).",
+  erradas:{0:"Não existe natural negativo, então −6 ∉ ℕ.",2:"−6 também é inteiro: −6 ∈ ℤ.",3:"−6 pertence a ℤ e a ℚ."}},
+
+ {q:`Como se escreve o decimal 0,9 na forma de fração?`,
+  opts:[fr(9,100),fr(9,10),fr(9,1),fr(90,10)],
+  correta:1,explicacao:"0,9 tem 1 casa decimal → denominador 10. Logo 0,9 = "+fr(9,10)+".",
+  erradas:{0:"100 seria para 2 casas decimais; 0,9 tem só 1.",2:fr(9,1)+" = 9, e não 0,9.",3:fr(90,10)+" = 9, valor errado."}},
+
+ {q:`Na dízima periódica 0,4545…, qual é o período?`,
+  opts:["4","5","45","454"],
+  correta:2,explicacao:"O grupo de algarismos que se repete é 45 (4545…). Então o período é 45.",
+  erradas:{0:"Só o 4 não, porque depois vem o 5 e repete o par.",1:"Não é só o 5; repete o par 45.",3:"454 não é o grupo que se repete certinho."}},
+
+ {q:`Qual relação entre os conjuntos numéricos está correta?`,
+  opts:["ℚ ⊂ ℤ ⊂ ℕ","ℕ ⊂ ℤ ⊂ ℚ","ℤ ⊂ ℚ ⊂ ℕ","ℕ ⊂ ℚ ⊂ ℤ"],
+  correta:1,explicacao:"Os naturais cabem nos inteiros, que cabem nos racionais: ℕ ⊂ ℤ ⊂ ℚ.",
+  erradas:{0:"Está invertido: ℚ é o maior, não o menor.",2:"ℚ não cabe dentro de ℕ; é o contrário.",3:"ℚ é maior que ℤ, então não cabe dentro de ℤ."}},
+
+ {q:`Quanto vale ${fr(5,8)} na forma decimal?`,
+  opts:["0,58","0,625","0,8","1,6"],
+  correta:1,explicacao:"5 ÷ 8 = 0,625 (decimal exato).",
+  erradas:{0:"0,58 não vem da divisão 5 ÷ 8.",2:"0,8 seria "+fr(8,10)+", não "+fr(5,8)+".",3:"1,6 seria 8 ÷ 5 (invertido)."}},
+
+ {q:`O decimal 0,07 corresponde a qual fração?`,
+  opts:[fr(7,10),fr(7,100),fr(7,1000),fr(70,100)],
+  correta:1,explicacao:"0,07 tem 2 casas decimais → denominador 100. Logo 0,07 = "+fr(7,100)+".",
+  erradas:{0:fr(7,10)+" = 0,7, dez vezes maior.",2:fr(7,1000)+" = 0,007, dez vezes menor.",3:fr(70,100)+" = 0,7, valor errado."}},
+
+ {q:`Na reta numérica, a fração ${fr(3,4)} (= 0,75) fica:`,
+  opts:["Entre 0 e 1","Entre 1 e 2","Entre 2 e 3","Antes do 0 (negativo)"],
+  correta:0,explicacao:"0,75 é maior que 0 e menor que 1, então "+fr(3,4)+" fica entre 0 e 1.",
+  erradas:{1:"0,75 é menor que 1, então não chega ao trecho de 1 a 2.",2:"0,75 está bem longe do trecho 2 a 3.",3:fr(3,4)+" é positivo, fica depois do zero."}},
+
+ {q:`Qual número é MAIOR: −0,5 ou −2?`,
+  opts:["−2, porque 2 é maior que 0,5","−0,5, porque está mais perto do zero","São iguais","Não dá para comparar negativos"],
+  correta:1,explicacao:"Nos negativos, o maior é o que está mais perto do zero. Então −0,5 > −2.",
+  erradas:{0:"Nos negativos é o contrário: quanto mais 'fundo', menor o número.",2:"São valores diferentes na reta.",3:"Dá sim — é só ver quem está mais perto do zero."}},
+
+ {q:`Quanto vale |−6| (o módulo de −6)?`,
+  opts:["−6","6","0","−1"],
+  correta:1,explicacao:"O módulo é a distância até o zero, sempre positiva. A distância de −6 ao zero é 6.",
+  erradas:{0:"Módulo nunca é negativo.",2:"−6 não está no zero; está a 6 de distância.",3:"−1 não tem relação com a distância de −6."}},
+
+ {q:`Qual destas frações vira uma DÍZIMA PERIÓDICA quando dividida?`,
+  opts:[fr(1,2)+" = 0,5",fr(1,4)+" = 0,25",fr(1,3)+" = 0,333…",fr(1,5)+" = 0,2"],
+  correta:2,explicacao:fr(1,3)+" = 0,333… nunca termina e o 3 se repete: é dízima periódica.",
+  erradas:{0:"0,5 termina, é decimal exato.",1:"0,25 termina, é decimal exato.",3:"0,2 termina, é decimal exato."}},
+
+ {q:`Transformando 0,25 em fração irredutível, obtemos:`,
+  opts:[fr(25,100),fr(1,4),fr(1,2),fr(5,10)],
+  correta:1,explicacao:"0,25 = "+fr(25,100)+". Simplificando (÷25 em cima e embaixo) = "+fr(1,4)+".",
+  erradas:{0:fr(25,100)+" está certo, mas ainda dá para simplificar.",2:fr(1,2)+" = 0,5, valor diferente.",3:fr(5,10)+" = 0,5, valor diferente."}},
+
+ {q:`Entre quais números inteiros está a fração ${fr(16,5)}?`,
+  opts:["Entre 1 e 2","Entre 2 e 3","Entre 3 e 4","Entre 4 e 5"],
+  correta:2,explicacao:fr(16,5)+" = 16 ÷ 5 = 3,2. Logo está entre 3 e 4.",
+  erradas:{0:"3,2 é bem maior que 2.",1:"3,2 já passou do 3.",3:"3,2 ainda não chegou no 4."}},
+
+ {q:`Comparando ${fr(5,7)} e ${fr(2,7)} (mesmo denominador), qual é maior?`,
+  opts:[fr(2,7),fr(5,7),"São iguais","Falta calcular o mmc"],
+  correta:1,explicacao:"Com o mesmo denominador, ganha o numerador maior. Como 5 > 2, "+fr(5,7)+" > "+fr(2,7)+".",
+  erradas:{0:"2 é menor que 5, então "+fr(2,7)+" é a menor.",2:"Numeradores diferentes dão frações diferentes.",3:"Como os denominadores já são iguais, não precisa de mmc."}},
+
+ {q:`Qual é o número OPOSTO (simétrico) de 2,5?`,
+  opts:["2,5","−2,5","5","0,25"],
+  correta:1,explicacao:"O oposto troca o sinal: o oposto de 2,5 é −2,5. Eles têm o mesmo módulo.",
+  erradas:{0:"Esse é o próprio número, não o oposto.",2:"5 é o dobro, não o oposto.",3:"0,25 não tem relação com o oposto de 2,5."}},
+
+ {q:`Quanto vale ${fr(2,5)} na forma decimal?`,
+  opts:["0,25","0,4","0,52","2,5"],
+  correta:1,explicacao:"2 ÷ 5 = 0,4 (decimal exato).",
+  erradas:{0:"0,25 seria "+fr(1,4)+".",2:"0,52 não vem de 2 ÷ 5.",3:"2,5 seria 5 ÷ 2 (invertido)."}},
+
+ {q:`O número 1,5 corresponde a qual fração irredutível?`,
+  opts:[fr(15,10),fr(3,2),fr(1,5),fr(15,100)],
+  correta:1,explicacao:"1,5 = "+fr(15,10)+", que simplificada (÷5) vira "+fr(3,2)+".",
+  erradas:{0:fr(15,10)+" está certo, mas ainda dá para simplificar.",2:fr(1,5)+" = 0,2, valor errado.",3:fr(15,100)+" = 0,15, valor errado."}},
+
+ {q:`Para comparar ${fr(1,3)} e ${fr(2,5)}, qual é o mmc dos denominadores 3 e 5?`,
+  opts:["8","15","30","5"],
+  correta:1,explicacao:"mmc(3,5) = 15. Assim "+fr(1,3)+" = "+fr(5,15)+" e "+fr(2,5)+" = "+fr(6,15)+".",
+  erradas:{0:"8 é a soma 3+5, não o mmc.",2:"30 é múltiplo comum, mas não o MENOR.",3:"5 não é múltiplo de 3."}},
+
+ {q:`O que é o módulo (valor absoluto) de um número?`,
+  opts:["O número sempre negativo","A distância do número até o zero na reta","O dobro do número","O número multiplicado por −1"],
+  correta:1,explicacao:"Módulo é a distância até o zero. Como distância não é negativa, o módulo é sempre positivo ou zero.",
+  erradas:{0:"Módulo nunca é negativo.",2:"Dobrar é outra operação.",3:"Multiplicar por −1 dá o oposto, não o módulo."}},
+
+ {q:`Complete: 0,2 ____ ℕ (conjunto dos naturais).`,
+  opts:["∈ (pertence)","∉ (não pertence)","= ","⊂ "],
+  correta:1,explicacao:"0,2 tem vírgula, então não é natural: 0,2 ∉ ℕ. (Mas 0,2 ∈ ℚ.)",
+  erradas:{0:"Naturais não têm vírgula, então 0,2 não pertence a ℕ.",2:"O símbolo = não serve para relação entre número e conjunto.",3:"⊂ é entre conjuntos, não entre número e conjunto."}},
+
+ {q:`Na reta numérica, o número −2,75 fica entre:`,
+  opts:["−2 e −1","−3 e −2","2 e 3","0 e −1"],
+  correta:1,explicacao:"−2,75 é negativo e está entre −3 e −2 (mais perto de −3).",
+  erradas:{0:"−2,75 é menor que −2, então passou de −2 para baixo.",2:"É negativo, não fica entre 2 e 3.",3:"−2,75 está bem mais fundo que o trecho 0 a −1."}},
+
+ {q:`Qual fração é MAIOR: ${fr(1,2)} ou ${fr(1,5)}?`,
+  opts:[fr(1,5)+", porque 5 > 2",fr(1,2)+", porque o pedaço é maior","São iguais","Não dá para saber"],
+  correta:1,explicacao:fr(1,2)+" = 0,5 e "+fr(1,5)+" = 0,2. Logo "+fr(1,2)+" > "+fr(1,5)+". Mais partes = pedaços menores!",
+  erradas:{0:"Denominador maior dá pedaço MENOR, não maior.",2:"0,5 e 0,2 são diferentes.",3:"Dá sim — basta transformar em decimal."}},
+
+ {q:`Classifique o número ${fr(10,3)} ao virar decimal:`,
+  opts:["Decimal exato","Dízima periódica (3,333…)","Número inteiro","Número natural"],
+  correta:1,explicacao:fr(10,3)+" = 3,333… o 3 se repete sem parar: é dízima periódica.",
+  erradas:{0:"A divisão não termina, então não é exato.",2:"3,333… tem vírgula, não é inteiro.",3:"Não é natural por ter casas decimais infinitas."}},
+
+ {q:`O decimal 0,008 tem quantas casas decimais e qual o denominador da fração?`,
+  opts:["1 casa → 10","2 casas → 100","3 casas → 1000","4 casas → 10000"],
+  correta:2,explicacao:"0,008 tem 3 casas decimais → denominador 1000. Então 0,008 = "+fr(8,1000)+" = "+fr(1,125)+".",
+  erradas:{0:"São 3 casas (0-0-8), não 1.",1:"São 3 casas, não 2.",3:"São 3 casas, não 4."}},
+
+ {q:`Comparando 0,75 e ${fr(1,4)}, qual é maior?`,
+  opts:[fr(1,4)+" (= 0,25)","0,75","São iguais","Não dá para comparar"],
+  correta:1,explicacao:fr(1,4)+" = 0,25. Como 0,75 > 0,25, então 0,75 > "+fr(1,4)+".",
+  erradas:{0:"0,25 é menor que 0,75.",2:"0,75 e 0,25 são diferentes.",3:"Dá sim, transformando "+fr(1,4)+" em 0,25."}},
+
+ {q:`Quanto vale |0| (o módulo de zero)?`,
+  opts:["Não existe","0","1","Infinito"],
+  correta:1,explicacao:"O zero está em cima da própria origem, então a distância até o zero é 0. Logo |0| = 0.",
+  erradas:{0:"Existe sim: vale 0.",2:"A distância do zero a ele mesmo é 0, não 1.",3:"A distância é zero, não infinita."}},
+
+ {q:`André separa ${fr(3,8)} do salário para contas fixas e 0,4 para um curso. Onde ele coloca MAIS dinheiro?`,
+  opts:["Nas contas, porque "+fr(3,8)+" é maior","No curso, porque 0,4 > 0,375","Os dois recebem igual","Falta informação"],
+  correta:1,explicacao:fr(3,8)+" = 0,375. Como 0,4 > 0,375, ele investe mais no curso.",
+  erradas:{0:fr(3,8)+" = 0,375, que é MENOR que 0,4.",2:"0,375 e 0,4 são valores diferentes.",3:"Dá para decidir transformando "+fr(3,8)+" em decimal."}},
+
+ {q:`Qual é o número OPOSTO (simétrico) de −10?`,
+  opts:["−10","10","0","100"],
+  correta:1,explicacao:"O oposto troca o sinal: o oposto de −10 é +10. Eles têm o mesmo módulo (10).",
+  erradas:{0:"Esse é o próprio número, não o oposto.",2:"O oposto fica do outro lado do zero, em +10.",3:"100 não tem relação com o oposto de −10."}}
+];
+
+const TOTAL=SIM.length;
+let respostas=new Array(TOTAL).fill(-1);
+let enviado=false,codigoLiberado=false,codigoGerado=null;
+const CHAVE_STORAGE='kit_estudos_mat_cap6_simulado_v1';
+
+function init(){
+ const area=document.getElementById('simArea');const letras=['A','B','C','D'];
+ SIM.forEach((q,i)=>{
+   let html=`<div class="q-card" id="qcard${i}"><div class="q-num">${i+1}</div><div class="q-texto">${i+1}. ${q.q}</div><div class="opcoes">`;
+   q.opts.forEach((opt,j)=>{html+=`<div class="opcao" id="opt${i}_${j}" onclick="selecionar(${i},${j})"><span class="opcao-letra">${letras[j]}</span><span>${opt}</span></div>`;});
+   html+=`</div><div class="feedback" id="fb${i}"></div></div>`;area.innerHTML+=html;
+ });
+ carregarProgresso();
+}
+function selecionar(qi,oi){
+ if(enviado)return;
+ for(let j=0;j<SIM[qi].opts.length;j++)document.getElementById(`opt${qi}_${j}`).classList.remove('selecionada');
+ document.getElementById(`opt${qi}_${oi}`).classList.add('selecionada');
+ respostas[qi]=oi;
+ document.getElementById(`qcard${qi}`).classList.add('respondida');
+ document.getElementById(`qcard${qi}`).classList.remove('faltando');
+ atualizarProgresso();salvarProgresso();
+}
+function atualizarProgresso(){
+ const resp=respostas.filter(r=>r>=0).length;const pct=Math.round(resp/TOTAL*100);
+ document.getElementById('progTexto').textContent=`${resp} de ${TOTAL} respondidas`;
+ document.getElementById('progPct').textContent=`${pct}%`;
+ document.getElementById('progFill').style.width=`${pct}%`;
+ const btn=document.getElementById('btnEnviar');
+ if(resp===TOTAL){btn.classList.remove('desabilitado');btn.classList.add('ativo');}else{btn.classList.add('desabilitado');btn.classList.remove('ativo');}
+}
+function tentarEnviar(){
+ if(enviado)return;
+ const faltando=[];respostas.forEach((r,i)=>{if(r<0)faltando.push(i+1);});
+ if(faltando.length>0){
+   const aviso=document.getElementById('avisoFaltam');
+   aviso.textContent=`Faltam: questões ${faltando.slice(0,8).join(', ')}${faltando.length>8?'...':''}`;aviso.style.display='block';
+   faltando.forEach(n=>{const card=document.getElementById(`qcard${n-1}`);card.classList.add('faltando');setTimeout(()=>card.classList.remove('faltando'),1000);});
+   document.getElementById(`qcard${faltando[0]-1}`).scrollIntoView({behavior:'smooth',block:'center'});return;
+ }
+ enviado=true;let acertos=0;respostas.forEach((r,i)=>{if(r===SIM[i].correta)acertos++;});
+ const letras='ABCDEFGHJKLMNPQRSTUVWXYZ';
+ const r1=letras[Math.floor(Math.random()*letras.length)];const r2=letras[Math.floor(Math.random()*letras.length)];
+ codigoGerado=`SIM-${acertos}-${r1}${r2}`;
+ const pct=Math.round(acertos/TOTAL*100);let emoji,titulo,msg;
+ if(pct>=80){emoji='🏆';titulo='Excelente mergulho!';msg='Você dominou os números racionais!';}
+ else if(pct>=64){emoji='👏';titulo='Bom trabalho!';msg='Mandou bem! Revise os erros para ficar perfeito.';}
+ else if(pct>=40){emoji='📚';titulo='Quase lá!';msg='Releia o resumo e tente de novo — você está perto!';}
+ else{emoji='💪';titulo='Não desista!';msg='Volte ao resumo e à leitura, e tente de novo. Você consegue!';}
+ document.getElementById('resEmoji').textContent=emoji;
+ document.getElementById('resTitulo').textContent=titulo;
+ document.getElementById('resNota').textContent=`${acertos}/${TOTAL}`;
+ document.getElementById('resMsg').textContent=msg;
+ document.getElementById('resCodigo').textContent=codigoGerado;
+ document.getElementById('resultadoOverlay').classList.add('visivel');
+ document.getElementById('rbNota').textContent=`📋 ${acertos}/${TOTAL}`;
+ document.getElementById('rbCodigo').textContent=codigoGerado;
+ document.getElementById('resultadoBarra').classList.add('visivel');
+ document.getElementById('progressContainer').style.display='none';
+ document.getElementById('bottomBar').style.display='none';
+ salvarProgresso();
+}
+function fecharResultado(){
+ document.getElementById('resultadoOverlay').classList.remove('visivel');
+ if(!codigoLiberado){
+   const area=document.getElementById('simArea');
+   if(!document.getElementById('travaMsg')){
+     area.insertAdjacentHTML('afterbegin',`<div class="trava-msg visivel" id="travaMsg">🔒 <strong>Gabarito bloqueado.</strong><br>Seu código: <strong style="font-family:monospace;font-size:18px;color:#ffb3b3;">${codigoGerado}</strong><br>Mostre para um adulto. Quando autorizar, digite-o abaixo:<br><br><input type="text" id="inputCodigo" placeholder="Digite o código" style="padding:10px 14px;border:2px solid var(--borda);border-radius:8px;font-size:16px;text-align:center;width:240px;font-family:monospace;text-transform:uppercase;background:#062c42;color:#fff;"><br><br><button onclick="verificarCodigo()" style="padding:10px 24px;background:var(--espuma);color:#022e3f;border:none;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito';">Liberar Gabarito</button><div id="codigoErro" style="color:#ffb3b3;font-size:12px;margin-top:8px;display:none;">Código incorreto. Peça ao adulto o código certo.</div></div>`);
+   }
+   window.scrollTo({top:0,behavior:'smooth'});
+ }
+}
+function verificarCodigo(){
+ const input=document.getElementById('inputCodigo').value.trim().toUpperCase();
+ if(input===codigoGerado){codigoLiberado=true;document.getElementById('travaMsg').style.display='none';liberarGabarito();salvarProgresso();}
+ else{document.getElementById('codigoErro').style.display='block';}
+}
+function liberarGabarito(){
+ const rbStatus=document.getElementById('rbStatus');rbStatus.textContent='✅ Gabarito liberado';rbStatus.classList.remove('bloqueado');rbStatus.classList.add('liberado');
+ const letras=['A','B','C','D'];
+ SIM.forEach((q,i)=>{
+   const card=document.getElementById(`qcard${i}`);card.classList.add('bloqueada');
+   const escolheu=respostas[i];const acertou=escolheu===q.correta;
+   q.opts.forEach((_,j)=>{const opt=document.getElementById(`opt${i}_${j}`);if(j===q.correta)opt.classList.add('resposta-certa');if(j===escolheu&&acertou)opt.classList.add('correta');if(j===escolheu&&!acertou)opt.classList.add('errada');});
+   const fb=document.getElementById(`fb${i}`);fb.style.display='block';
+   if(acertou){fb.className='feedback acertou';fb.innerHTML=`<div class="feedback-titulo">✅ Você acertou!</div><div>${q.explicacao}</div>`;}
+   else{let e='';for(const[idx,m]of Object.entries(q.erradas))e+=`<p><strong>${letras[idx]})</strong> ${m}</p>`;
+     fb.className='feedback errou';fb.innerHTML=`<div class="feedback-titulo">❌ Resposta incorreta</div><div><strong style="color:#9af5cf">Correta: ${letras[q.correta]})</strong> ${q.explicacao}</div><div class="feedback-erradas"><strong>Por que as outras estão erradas:</strong>${e}</div>`;}
+ });
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function salvarProgresso(){try{const estado={respostas,enviado,codigoLiberado,codigoGerado,dataSalvamento:new Date().toISOString()};localStorage.setItem(CHAVE_STORAGE,JSON.stringify(estado));rotulo(estado.dataSalvamento);}catch(e){}}
+function carregarProgresso(){try{const dado=localStorage.getItem(CHAVE_STORAGE);if(!dado)return;const estado=JSON.parse(dado);
+ if(estado.respostas){respostas=estado.respostas;respostas.forEach((r,i)=>{if(r>=0){document.getElementById(`opt${i}_${r}`).classList.add('selecionada');document.getElementById(`qcard${i}`).classList.add('respondida');}});}
+ if(estado.enviado){enviado=true;codigoGerado=estado.codigoGerado;let acertos=0;respostas.forEach((r,i)=>{if(r===SIM[i].correta)acertos++;});
+   document.getElementById('rbNota').textContent=`📋 ${acertos}/${TOTAL}`;document.getElementById('rbCodigo').textContent=codigoGerado;
+   document.getElementById('resultadoBarra').classList.add('visivel');document.getElementById('progressContainer').style.display='none';document.getElementById('bottomBar').style.display='none';
+   if(estado.codigoLiberado){codigoLiberado=true;liberarGabarito();}
+   else{const area=document.getElementById('simArea');if(!document.getElementById('travaMsg')){area.insertAdjacentHTML('afterbegin',`<div class="trava-msg visivel" id="travaMsg">🔒 <strong>Gabarito bloqueado.</strong><br>Seu código: <strong style="font-family:monospace;font-size:18px;color:#ffb3b3;">${codigoGerado}</strong><br>Mostre para um adulto. Quando autorizar, digite-o abaixo:<br><br><input type="text" id="inputCodigo" placeholder="Digite o código" style="padding:10px 14px;border:2px solid var(--borda);border-radius:8px;font-size:16px;text-align:center;width:240px;font-family:monospace;text-transform:uppercase;background:#062c42;color:#fff;"><br><br><button onclick="verificarCodigo()" style="padding:10px 24px;background:var(--espuma);color:#022e3f;border:none;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito';">Liberar Gabarito</button><div id="codigoErro" style="color:#ffb3b3;font-size:12px;margin-top:8px;display:none;">Código incorreto.</div></div>`);}}
+ }else{atualizarProgresso();}
+ rotulo(estado.dataSalvamento);}catch(e){}}
+function rotulo(iso){const el=document.getElementById('ultimo-salvar');if(!iso){el.textContent='—';return;}const d=new Date(iso);el.textContent=d.toLocaleDateString('pt-BR')+' às '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function mostrarToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('visivel');setTimeout(()=>t.classList.remove('visivel'),2200);}
+function exportarProgresso(){const dado=localStorage.getItem(CHAVE_STORAGE);if(!dado){alert('Ainda não há progresso para exportar.');return;}const blob=new Blob([dado],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='progresso_simulado_mat_cap6.json';a.click();URL.revokeObjectURL(url);mostrarToast('📥 Exportado!');}
+function importarProgresso(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{JSON.parse(e.target.result);if(confirm('Isso vai substituir o progresso atual. Continuar?')){localStorage.setItem(CHAVE_STORAGE,e.target.result);mostrarToast('📤 Importado!');setTimeout(()=>location.reload(),800);}}catch(x){alert('Arquivo inválido.');}};r.readAsText(f);ev.target.value='';}
+function zerarProgresso(){if(!confirm('Tem certeza? Todo o progresso será apagado.'))return;localStorage.removeItem(CHAVE_STORAGE);mostrarToast('🗑️ Apagado!');setTimeout(()=>location.reload(),800);}
+init();
+</script>
+</body>
+</html>
